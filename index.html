@@ -28,6 +28,15 @@
   --teal:     #4db8a8;
   --safe-top: env(safe-area-inset-top, 44px);
   --safe-bot: env(safe-area-inset-bottom, 34px);
+/* Font-size scale — generated from Typography.swift */
+  --fs-display: 72px;
+  --fs-title: 28px;
+  --fs-headline: 24px;
+  --fs-callout: 20px;
+  --fs-body: 19px;
+  --fs-subhead: 18px;
+  --fs-caption: 17px;
+  --fs-micro: 16px;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html { font-size:16px; }
@@ -375,36 +384,118 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--whit
 // ══════════════════════════════════════════
 const START_DATE = new Date(2026, 2, 30); // Mar 30 2026
 
+// Peloton instructor slug map
+const INSTRUCTOR_SLUGS = {
+};
 const DAY_DATES = [
-  'Mon Mar 30','Tue Mar 31','Wed Apr 1','Thu Apr 2','Fri Apr 3','Sat Apr 4','Sun Apr 5',
-  'Mon Apr 6','Tue Apr 7','Wed Apr 8','Thu Apr 9','Fri Apr 10','Sat Apr 11','Sun Apr 12',
-  'Mon Apr 13','Tue Apr 14','Wed Apr 15','Thu Apr 16','Fri Apr 17','Sat Apr 18','Sun Apr 19',
-  'Mon Apr 20','Tue Apr 21','Wed Apr 22','Thu Apr 23','Fri Apr 24','Sat Apr 25','Sun Apr 26',
-  'Mon Apr 27','Tue Apr 28','Wed Apr 29','Thu Apr 30','Fri May 1','Sat May 2','Sun May 3',
-  'Mon May 4','Tue May 5','Wed May 6','Thu May 7','Fri May 8','Sat May 9','Sun May 10',
-  'Mon May 11','Tue May 12','Wed May 13','Thu May 14','Fri May 15','Sat May 16','Sun May 17',
-  'Mon May 18','Tue May 19','Wed May 20','Thu May 21','Fri May 22','Sat May 23','Sun May 24',
-  'Mon May 25','Tue May 26','Wed May 27','Thu May 28','Fri May 29','Sat May 30','Sun May 31',
-  'Mon Jun 1','Tue Jun 2','Wed Jun 3','Thu Jun 4','Fri Jun 5','Sat Jun 6','Sun Jun 7',
-  'Mon Jun 8','Tue Jun 9','Wed Jun 10','Thu Jun 11','Fri Jun 12','Sat Jun 13','Sun Jun 14',
-  'Mon Jun 15','Tue Jun 16','Wed Jun 17','Thu Jun 18','Fri Jun 19','Sat Jun 20','Sun Jun 21',
-  'Mon Jun 22','Tue Jun 23','Wed Jun 24','Thu Jun 25','Fri Jun 26','Sat Jun 27','Sun Jun 28'
+  "Mon Mar 30","Tue Mar 31","Wed Apr 1","Thu Apr 2","Fri Apr 3","Sat Apr 4","Sun Apr 5",
+  "Mon Apr 6","Tue Apr 7","Wed Apr 8","Thu Apr 9","Fri Apr 10","Sat Apr 11","Sun Apr 12",
+  "Mon Apr 13","Tue Apr 14","Wed Apr 15","Thu Apr 16","Fri Apr 17","Sat Apr 18","Sun Apr 19",
+  "Mon Apr 20","Tue Apr 21","Wed Apr 22","Thu Apr 23","Fri Apr 24","Sat Apr 25","Sun Apr 26",
+  "Mon Apr 27","Tue Apr 28","Wed Apr 29","Thu Apr 30","Fri May 1","Sat May 2","Sun May 3",
+  "Mon May 4","Tue May 5","Wed May 6","Thu May 7","Fri May 8","Sat May 9","Sun May 10",
+  "Mon May 11","Tue May 12","Wed May 13","Thu May 14","Fri May 15","Sat May 16","Sun May 17",
+  "Mon May 18","Tue May 19","Wed May 20","Thu May 21","Fri May 22","Sat May 23","Sun May 24",
+  "Mon May 25","Tue May 26","Wed May 27","Thu May 28","Fri May 29","Sat May 30","Sun May 31",
+  "Mon Jun 1","Tue Jun 2","Wed Jun 3","Thu Jun 4","Fri Jun 5","Sat Jun 6","Sun Jun 7",
+  "Mon Jun 8","Tue Jun 9","Wed Jun 10","Thu Jun 11","Fri Jun 12","Sat Jun 13","Sun Jun 14",
+  "Mon Jun 15","Tue Jun 16","Wed Jun 17","Thu Jun 18","Fri Jun 19","Sat Jun 20","Sun Jun 21",
+  "Mon Jun 22","Tue Jun 23","Wed Jun 24","Thu Jun 25","Fri Jun 26","Sat Jun 27","Sun Jun 28"
 ];
 
-// Workout builder
-function w(type, name, platform, mins, note) {
-  return { type, name, platform, mins, note: note||null };
-}
-
-// Grip work progressions
-function grip(phase) {
-  if(phase===1) return w('grip','Grip Strength Work','Self-Led',10,
-    'Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.');
-  if(phase===2) return w('grip','Grip Progressive Overload','Self-Led',12,
-    'Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.');
-  return w('grip','Grip Max Effort','Self-Led',12,
-    'AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week\'s time.');
-}
+// Full schedule — HIIT-first fasted, then strength, then stretch
+const SCHEDULE = {
+1: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"Foundation week. Learn the movements. p.ball, p.band, light weights. Full body — focus on hip hinge form.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Cool-Down Stretch",instructor:"Pvolve",mins:10,note:"Recover & Stretch class or self-led.",pullupNote:null}],
+2: [{type:"peloton",name:"Low-Impact HIIT Ride",instructor:"Peloton",mins:30,note:"Tabata or intervals. Keep it challenging but joint-friendly. Moderate resistance.",pullupNote:null}, {type:"selfcare",name:"Breathwork & Stress Relief",instructor:"Pvolve",mins:10,note:"Meditation class to close. 5 min breathwork after ride.",pullupNote:null}],
+3: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:35,note:"Full body sculpt. p.3 trainer + ankle band. Focus on glute activation and shoulder stability.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:"Recover & Stretch — hip focus.",pullupNote:null}],
+4: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Intervals. Push on surges, recover fully between.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Full body recovery class. Prioritise hips and thoracic spine.",pullupNote:null}],
+5: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"Build on Monday. Go slightly heavier where form allows. Focus on pulling movements.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Upper Body Stretch",instructor:"Pvolve",mins:10,note:"Shoulders, chest, wrists.",pullupNote:null}],
+6: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"End of week push. Full effort.",pullupNote:null}, {type:"pvolve",name:"Women's Health — Menopause Series",instructor:"Pvolve",mins:20,note:"Hormonal health class. Pelvic floor + stability.",pullupNote:null}],
+7: null,
+8: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"W2. Add ankle weights if comfortable. Hip hinge + row combos.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+9: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"20s max / 10s rest × 8. Keep cadence high on push intervals.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:10,note:"Close the session with a 10-min Pvolve meditation.",pullupNote:null}],
+10: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:35,note:"Upper body emphasis this week. Shoulder press, rows, chest work with light dumbbells.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Shoulder Mobility Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+11: [{type:"peloton",name:"Intervals Ride",instructor:"Peloton",mins:30,note:"30s on / 30s recover format. Controlled breathing throughout.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Hip mobility. Hold each stretch 60s+.",pullupNote:null}],
+12: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"Lower body focus. Glutes, hamstrings, single-leg balance work.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Hip Flexor Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+13: [{type:"peloton",name:"Low-Impact HIIT Ride",instructor:"Peloton",mins:30,note:"Emma Lovewell low-impact. High energy, joint-safe.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Menopause support series. Bone health focus.",pullupNote:null}],
+14: null,
+15: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"W3. Progressive overload — 5-10% heavier on main lifts.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+16: [{type:"peloton",name:"HIIT & Hills Ride",instructor:"Peloton",mins:30,note:"Seated climbs. Moderate-heavy resistance. Focus on pushing through.",pullupNote:null}, {type:"selfcare",name:"Breathwork",instructor:"Pvolve",mins:10,note:"Box breathing. 4-4-4-4 for 5 mins post-ride.",pullupNote:null}],
+17: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:35,note:"Full body. Increase intensity from W1. Add p.band resistance.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+18: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"Final HIIT of Phase 1. Best effort.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Extra time on hips — 3 min per side minimum.",pullupNote:null}],
+19: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"Phase 1 final PWT. Pulling movements heavy. Note weights for baseline.",pullupNote:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null}, {type:"stretch",name:"Upper Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+20: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Phase 1 final cardio. Push harder than W1 Saturday.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Pelvic floor + core stability series.",pullupNote:null}],
+21: null,
+22: [{type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:30,note:"Gentle corrective movement. Joints and connective tissue focus.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:15,note:"Long holds. Completely restorative.",pullupNote:null}],
+23: [{type:"peloton",name:"Recovery Ride",instructor:"Peloton",mins:20,note:"Zone 2 only. Easy spin. Heart rate under 120.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:15,note:"Stress reset mid-week.",pullupNote:null}],
+24: [{type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:30,note:"Hip deep dive. 90/90 stretching. Full hip capsule work.",pullupNote:null}, {type:"stretch",name:"Shoulder Mobility",instructor:"Pvolve",mins:15,note:"Thoracic rotation and shoulder CAR drills.",pullupNote:null}],
+25: [{type:"selfcare",name:"Breathwork & Meditation",instructor:"Pvolve",mins:20,note:"Full breathwork session. Wim Hof light or box breathing.",pullupNote:null}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:20,note:"Corrective movement. Gentle only.",pullupNote:null}],
+26: [{type:"peloton",name:"Low-Impact Ride",instructor:"Peloton",mins:20,note:"Easy movement. Zone 2. Flush recovery.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:15,note:null,pullupNote:null}],
+27: [{type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:30,note:"Pre-Phase 2 mobility. Full body. Note any areas of tightness.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:10,note:"Set intentions for Phase 2.",pullupNote:null}],
+28: null,
+29: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:45,note:"P2 opener. Heavier weights. Full kit — p.ball, p.3 trainer, ankle weights.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+30: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"P2 cardio. Push harder than Phase 1. Stronger legs now.",pullupNote:null}, {type:"selfcare",name:"Breathwork",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+31: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:40,note:"Heavier dumbbells. Upper body push + pull supersets.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+32: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Intervals. Full recovery between sets. Quality over quantity.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Hip priority. 60-90s holds.",pullupNote:null}],
+33: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:45,note:"Lower body emphasis. Single-leg Romanian DL. Glute bridge loaded.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Hip Flexor Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+34: [{type:"peloton",name:"HIIT & Hills Ride",instructor:"Peloton",mins:30,note:"Climb-focused. Heavy resistance seated climbs.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Menopause series. Balance + bone density.",pullupNote:null}],
+35: null,
+36: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:45,note:"W6. Progressive overload every session. Add 5lb if form is clean.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+37: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"Lactic threshold. Max cadence on push intervals.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+38: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:40,note:"Shoulder + hip stability emphasis. Balance challenges.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+39: [{type:"peloton",name:"Intervals Ride",instructor:"Peloton",mins:30,note:"Steady-state + surge pattern.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Focus: thoracic spine and hip flexors.",pullupNote:null}],
+40: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:45,note:"Pull-heavy day. Rows, rear delt, lat work. Heavier band resistance.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Upper Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+41: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"W6 closer. Stronger than 5 weeks ago.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Cycle support + joint care focus.",pullupNote:null}],
+42: null,
+43: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:45,note:"W7 — Phase 2 peak. Heaviest weights yet. Full control throughout.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+44: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"Phase 2 peak cardio. Best effort on every interval.",pullupNote:null}, {type:"selfcare",name:"Breathwork",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+45: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:40,note:"Upper + lower superset format. 40s on / 20s rest.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+46: [{type:"peloton",name:"HIIT & Hills Ride",instructor:"Peloton",mins:30,note:"Strongest ride of Phase 2.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Full body decompression before transition week.",pullupNote:null}],
+47: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:45,note:"P2 final PWT. Note all weights — compare to Day 29 baseline.",pullupNote:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null}, {type:"stretch",name:"Upper Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+48: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Phase 2 final cardio. Leave it all on the bike.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Celebrate 7 weeks. Hormonal + strength focus.",pullupNote:null}],
+49: null,
+50: [{type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:30,note:"Nervous system reset. Gentle corrective movement.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:15,note:null,pullupNote:null}],
+51: [{type:"peloton",name:"Recovery Ride",instructor:"Peloton",mins:20,note:"Zone 1-2 only. Flush and recover.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:15,note:"Longer session. Stress and nervous system reset.",pullupNote:null}],
+52: [{type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:30,note:"Joint mobility deep dive. Hips, shoulders, wrists.",pullupNote:null}, {type:"stretch",name:"Wrist & Grip Mobility",instructor:"Pvolve",mins:10,note:"Wrist flexion / extension drills. Grip recovery.",pullupNote:null}],
+53: [{type:"selfcare",name:"Breathwork & Meditation",instructor:"Pvolve",mins:20,note:"Full session. Set intentions for Phase 3 — peak work ahead.",pullupNote:null}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:20,note:"Light corrective only.",pullupNote:null}],
+54: [{type:"peloton",name:"Low-Impact Ride",instructor:"Peloton",mins:20,note:"Easy. Zone 2.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:15,note:null,pullupNote:null}],
+55: [{type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:30,note:"Prepare the body for Phase 3. Hip + shoulder priority.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:10,note:"Prime mentally for the final phase.",pullupNote:null}],
+56: null,
+57: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"P3 opener. Heaviest program weights. Full kit max resistance.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+58: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"P3 HIIT. Max output on every 20s push. Stronger than ever.",pullupNote:null}, {type:"selfcare",name:"Breathwork",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+59: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:45,note:"P3 sculpt. Full body. Add extra set to key exercises.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+60: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Intervals. Peak effort.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Prioritise recovery to sustain P3 intensity.",pullupNote:null}],
+61: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"Lower body power day. Heavy hip hinge, loaded single-leg work.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Hip Flexor & Glute Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+62: [{type:"peloton",name:"HIIT & Hills Ride",instructor:"Peloton",mins:30,note:"Climb-heavy. Best hill ride of the program.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Menopause series — bone density and balance.",pullupNote:null}],
+63: null,
+64: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"W10. You are stronger than week 1. Show it.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+65: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"Best Tabata of the program. Max cadence and resistance.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+66: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:45,note:"Full kit. Upper + lower superset with no rest between.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Shoulder & Hip Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+67: [{type:"peloton",name:"Intervals Ride",instructor:"Peloton",mins:30,note:"Peak interval session.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Deep hip work. 2 min holds.",pullupNote:null}],
+68: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"Heaviest pull session of program. Rows, band work, shoulder stability.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Upper Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+69: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"W10 closer. Strongest cardio of the program.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Hormonal health + pelvic floor.",pullupNote:null}],
+70: null,
+71: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"W11. Final heavy build week.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+72: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"W11 Tabata. All out.",pullupNote:null}, {type:"selfcare",name:"Breathwork",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+73: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:45,note:"W11 sculpt. Beat every rep count from W9.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+74: [{type:"peloton",name:"HIIT & Hills Ride",instructor:"Peloton",mins:30,note:"W11 hills. Heaviest resistance climbs.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Thoracic spine + hip capsule.",pullupNote:null}],
+75: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"W11 final PWT. Note all weights for program summary.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Upper Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+76: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Penultimate bootcamp. Max effort.",pullupNote:null}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Celebrate 76 days.",pullupNote:null}],
+77: null,
+78: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:40,note:"Deload. Drop 20% weight. Perfect form, full ROM.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+79: [{type:"peloton",name:"Low-Impact Ride",instructor:"Peloton",mins:30,note:"Deload cardio. Moderate effort only.",pullupNote:null}, {type:"selfcare",name:"Meditation",instructor:"Pvolve",mins:15,note:"Full session. Prepare mentally for Victory Week.",pullupNote:null}],
+80: [{type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:35,note:"Deep joint work. Everything — hips, shoulders, wrists.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:15,note:null,pullupNote:null}],
+81: [{type:"peloton",name:"Recovery Ride",instructor:"Peloton",mins:20,note:"Zone 2 deload.",pullupNote:null}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:20,note:"Gentle corrective. Nervous system primed for victory week.",pullupNote:null}],
+82: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:35,note:"Light deload sculpt. Smooth and sharp.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+83: [{type:"selfcare",name:"Breathwork & Meditation",instructor:"Pvolve",mins:20,note:"Full session before Victory Week. Visualise success.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Final prep.",pullupNote:null}],
+84: null,
+85: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"VICTORY WEEK. Heaviest weights of the program. Show what 84 days built.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+86: [{type:"peloton",name:"Tabata Ride",instructor:"Peloton",mins:30,note:"Victory Tabata. Best effort of 90 days.",pullupNote:null}, {type:"selfcare",name:"Breathwork",instructor:"Pvolve",mins:10,note:"Breathwork to close. 🌿",pullupNote:null}],
+87: [{type:"pvolve",name:"Strength & Sculpt",instructor:"Pvolve",mins:45,note:"Final sculpt. Full kit. Everything you've learned.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Hip & Shoulder Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+88: [{type:"peloton",name:"HIIT Ride",instructor:"Peloton",mins:30,note:"Final HIIT ride. Max output.",pullupNote:null}, {type:"pvolve",name:"Recover & Stretch",instructor:"Pvolve",mins:20,note:"Recover and reflect.",pullupNote:null}],
+89: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"Final PWT. Heaviest lift of the program.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
+90: [{type:"peloton",name:"Victory Ride",instructor:"Peloton",mins:30,note:"90 days. Celebrate every pedal stroke. 🎉",pullupNote:null}, {type:"pvolve",name:"Women's Health — Celebration Class",instructor:"Pvolve",mins:20,note:"Final class. You have built something real.",pullupNote:null}, {type:"selfcare",name:"Final Meditation",instructor:"Pvolve",mins:15,note:"Close the program. Breathe. You did it. 🌿",pullupNote:null}],
+};
 
 // Pvolve platform URL (filtered to class type)
 function pvolveUrl(classType) {
@@ -437,145 +528,6 @@ function pelotonUrl(instructor, mins) {
 
 // Joints for Life (Petra) URL
 const JFL_URL = 'https://members.onepeloton.com/classes/stretching?sort_by=top_rated&duration=10';
-
-// ── THE SCHEDULE ──
-// 6 days/week: Mon=PWT+Grip, Tue=Peloton HIIT, Wed=S&S+Grip, Thu=HIIT+Recover,
-//              Fri=PWT+Grip, Sat=HIIT+Women's Health, Sun=Rest
-// Morning ritual (JfL + meditation) shown as banner on all training days
-// Phases: P1 W1-3, Recovery W4, P2 W5-7, Recovery W8, P3 W9-13
-
-const SCHEDULE = {
-// ── PHASE 1: Foundation (W1–W3) ──
-// Mon
-1:  [w('pvolve','Progressive Weight Training','Pvolve',40,'Foundation week. Learn the movements. p.ball, p.band, light weights. Full body — focus on hip hinge form.'), grip(1), w('stretch','Cool-Down Stretch','Pvolve',10,'Recover & Stretch class or self-led.')],
-// Tue
-2:  [w('peloton','Low-Impact HIIT Ride','Peloton',30,'Tabata or intervals. Keep it challenging but joint-friendly. Moderate resistance.'), w('selfcare','Breathwork & Stress Relief','Peloton',10,'Meditation class to close. 5 min breathwork after ride.')],
-// Wed
-3:  [w('pvolve','Strength & Sculpt','Pvolve',35,'Full body sculpt. p.3 trainer + ankle band. Focus on glute activation and shoulder stability.'), grip(1), w('stretch','Hip & Shoulder Stretch','Pvolve',10,'Recover & Stretch — hip focus.')],
-// Thu
-4:  [w('peloton','HIIT Ride','Peloton',30,'Intervals. Push on surges, recover fully between.'), w('pvolve','Recover & Stretch','Pvolve',20,'Full body recovery class. Prioritise hips and thoracic spine.')],
-// Fri
-5:  [w('pvolve','Progressive Weight Training','Pvolve',40,'Build on Monday. Go slightly heavier where form allows. Focus on pulling movements.'), grip(1), w('stretch','Upper Body Stretch','Pvolve',10,'Shoulders, chest, wrists.')],
-// Sat
-6:  [w('peloton','HIIT Ride','Peloton',30,'End of week push. Full effort.'), w('pvolve',"Women's Health — Menopause Series",'Pvolve',20,'Hormonal health class. Pelvic floor + stability.')],
-// Sun
-7:  null,
-
-// Mon
-8:  [w('pvolve','Progressive Weight Training','Pvolve',40,'W2. Add ankle weights if comfortable. Hip hinge + row combos.'), grip(1), w('stretch','Full Body Stretch','Pvolve',10)],
-// Tue
-9:  [w('peloton','Tabata Ride','Peloton',30,'20s max / 10s rest × 8. Keep cadence high on push intervals.'), w('selfcare','Meditation','Pvolve',10,'Close the session with a 10-min Pvolve meditation.')],
-// Wed
-10: [w('pvolve','Strength & Sculpt','Pvolve',35,'Upper body emphasis this week. Shoulder press, rows, chest work with light dumbbells.'), grip(1), w('stretch','Shoulder Mobility Stretch','Pvolve',10)],
-// Thu
-11: [w('peloton','Intervals Ride','Peloton',30,'30s on / 30s recover format. Controlled breathing throughout.'), w('pvolve','Recover & Stretch','Pvolve',20,'Hip mobility. Hold each stretch 60s+.')],
-// Fri
-12: [w('pvolve','Progressive Weight Training','Pvolve',40,'Lower body focus. Glutes, hamstrings, single-leg balance work.'), grip(1), w('stretch','Hip Flexor Stretch','Pvolve',10)],
-// Sat
-13: [w('peloton','Low-Impact HIIT Ride','Peloton',30,'Emma Lovewell low-impact. High energy, joint-safe.'), w('pvolve',"Women's Health",'Pvolve',20,'Menopause support series. Bone health focus.')],
-// Sun
-14: null,
-
-// Mon
-15: [w('pvolve','Progressive Weight Training','Pvolve',40,'W3. Progressive overload — 5-10% heavier on main lifts.'), grip(1), w('stretch','Full Body Stretch','Pvolve',10)],
-// Tue
-16: [w('peloton','HIIT & Hills Ride','Peloton',30,'Seated climbs. Moderate-heavy resistance. Focus on pushing through.'), w('selfcare','Breathwork','Peloton',10,'Box breathing. 4-4-4-4 for 5 mins post-ride.')],
-// Wed
-17: [w('pvolve','Strength & Sculpt','Pvolve',35,'Full body. Increase intensity from W1. Add p.band resistance.'), grip(1), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-// Thu
-18: [w('peloton','Tabata Ride','Peloton',30,'Final HIIT of Phase 1. Best effort.'), w('pvolve','Recover & Stretch','Pvolve',20,'Extra time on hips — 3 min per side minimum.')],
-// Fri
-19: [w('pvolve','Progressive Weight Training','Pvolve',40,'Phase 1 final PWT. Pulling movements heavy. Note weights for baseline.'), grip(1), w('stretch','Upper Body Stretch','Pvolve',10)],
-// Sat
-20: [w('peloton','HIIT Ride','Peloton',30,'Phase 1 final cardio. Push harder than W1 Saturday.'), w('pvolve',"Women's Health",'Pvolve',20,'Pelvic floor + core stability series.')],
-// Sun
-21: null,
-
-// ── TRANSITION W4: Active Recovery ──
-22: [w('pvolve','Movement Therapy','Pvolve',30,'Gentle corrective movement. Joints and connective tissue focus.'), w('stretch','Full Body Stretch','Pvolve',15,'Long holds. Completely restorative.')],
-23: [w('peloton','Recovery Ride','Peloton',20,'Zone 2 only. Easy spin. Heart rate under 120.'), w('selfcare','Meditation','Pvolve',15,'Stress reset mid-week.')],
-24: [w('pvolve','Recover & Stretch','Pvolve',30,'Hip deep dive. 90/90 stretching. Full hip capsule work.'), w('stretch','Shoulder Mobility','Pvolve',15,'Thoracic rotation and shoulder CAR drills.')],
-25: [w('selfcare','Breathwork & Meditation','Pvolve',20,'Full breathwork session. Wim Hof light or box breathing.'), w('pvolve','Movement Therapy','Pvolve',20,'Corrective movement. Gentle only.')],
-26: [w('peloton','Low-Impact Ride','Peloton',20,'Easy movement. Zone 2. Flush recovery.'), w('stretch','Full Body Stretch','Pvolve',15)],
-27: [w('pvolve','Recover & Stretch','Pvolve',30,'Pre-Phase 2 mobility. Full body. Note any areas of tightness.'), w('selfcare','Meditation','Pvolve',10,'Set intentions for Phase 2.')],
-28: null,
-
-// ── PHASE 2: Build (W5–W7) ──
-29: [w('pvolve','Progressive Weight Training','Pvolve',45,'P2 opener. Heavier weights. Full kit — p.ball, p.3 trainer, ankle weights.'), grip(2), w('stretch','Full Body Stretch','Pvolve',10)],
-30: [w('peloton','Tabata Ride','Peloton',30,'P2 cardio. Push harder than Phase 1. Stronger legs now.'), w('selfcare','Breathwork','Pvolve',10)],
-31: [w('pvolve','Strength & Sculpt','Pvolve',40,'Heavier dumbbells. Upper body push + pull supersets.'), grip(2), w('stretch','Shoulder Stretch','Pvolve',10)],
-32: [w('peloton','HIIT Ride','Peloton',30,'Intervals. Full recovery between sets. Quality over quantity.'), w('pvolve','Recover & Stretch','Pvolve',20,'Hip priority. 60-90s holds.')],
-33: [w('pvolve','Progressive Weight Training','Pvolve',45,'Lower body emphasis. Single-leg Romanian DL. Glute bridge loaded.'), grip(2), w('stretch','Hip Flexor Stretch','Pvolve',10)],
-34: [w('peloton','HIIT & Hills Ride','Peloton',30,'Climb-focused. Heavy resistance seated climbs.'), w('pvolve',"Women's Health",'Pvolve',20,'Menopause series. Balance + bone density.')],
-35: null,
-
-36: [w('pvolve','Progressive Weight Training','Pvolve',45,'W6. Progressive overload every session. Add 5lb if form is clean.'), grip(2), w('stretch','Full Body Stretch','Pvolve',10)],
-37: [w('peloton','Tabata Ride','Peloton',30,'Lactic threshold. Max cadence on push intervals.'), w('selfcare','Meditation','Pvolve',10)],
-38: [w('pvolve','Strength & Sculpt','Pvolve',40,'Shoulder + hip stability emphasis. Balance challenges.'), grip(2), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-39: [w('peloton','Intervals Ride','Peloton',30,'Steady-state + surge pattern.'), w('pvolve','Recover & Stretch','Pvolve',20,'Focus: thoracic spine and hip flexors.')],
-40: [w('pvolve','Progressive Weight Training','Pvolve',45,'Pull-heavy day. Rows, rear delt, lat work. Heavier band resistance.'), grip(2), w('stretch','Upper Body Stretch','Pvolve',10)],
-41: [w('peloton','HIIT Ride','Peloton',30,'W6 closer. Stronger than 5 weeks ago.'), w('pvolve',"Women's Health",'Pvolve',20,'Cycle support + joint care focus.')],
-42: null,
-
-43: [w('pvolve','Progressive Weight Training','Pvolve',45,'W7 — Phase 2 peak. Heaviest weights yet. Full control throughout.'), grip(2), w('stretch','Full Body Stretch','Pvolve',10)],
-44: [w('peloton','Tabata Ride','Peloton',30,'Phase 2 peak cardio. Best effort on every interval.'), w('selfcare','Breathwork','Pvolve',10)],
-45: [w('pvolve','Strength & Sculpt','Pvolve',40,'Upper + lower superset format. 40s on / 20s rest.'), grip(2), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-46: [w('peloton','HIIT & Hills Ride','Peloton',30,'Strongest ride of Phase 2.'), w('pvolve','Recover & Stretch','Pvolve',20,'Full body decompression before transition week.')],
-47: [w('pvolve','Progressive Weight Training','Pvolve',45,'P2 final PWT. Note all weights — compare to Day 29 baseline.'), grip(2), w('stretch','Upper Body Stretch','Pvolve',10)],
-48: [w('peloton','HIIT Ride','Peloton',30,'Phase 2 final cardio. Leave it all on the bike.'), w('pvolve',"Women's Health",'Pvolve',20,'Celebrate 7 weeks. Hormonal + strength focus.')],
-49: null,
-
-// ── TRANSITION W8 ──
-50: [w('pvolve','Movement Therapy','Pvolve',30,'Nervous system reset. Gentle corrective movement.'), w('stretch','Full Body Stretch','Pvolve',15)],
-51: [w('peloton','Recovery Ride','Peloton',20,'Zone 1-2 only. Flush and recover.'), w('selfcare','Meditation','Pvolve',15,'Longer session. Stress and nervous system reset.')],
-52: [w('pvolve','Recover & Stretch','Pvolve',30,'Joint mobility deep dive. Hips, shoulders, wrists.'), w('stretch','Wrist & Grip Mobility','Pvolve',10,'Wrist flexion / extension drills. Grip recovery.')],
-53: [w('selfcare','Breathwork & Meditation','Pvolve',20,'Full session. Set intentions for Phase 3 — peak work ahead.'), w('pvolve','Movement Therapy','Pvolve',20,'Light corrective only.')],
-54: [w('peloton','Low-Impact Ride','Peloton',20,'Easy. Zone 2.'), w('stretch','Full Body Stretch','Pvolve',15)],
-55: [w('pvolve','Recover & Stretch','Pvolve',30,'Prepare the body for Phase 3. Hip + shoulder priority.'), w('selfcare','Meditation','Pvolve',10,'Prime mentally for the final phase.')],
-56: null,
-
-// ── PHASE 3: Peak (W9–W13) ──
-57: [w('pvolve','Progressive Weight Training','Pvolve',50,'P3 opener. Heaviest program weights. Full kit max resistance.'), grip(3), w('stretch','Full Body Stretch','Pvolve',10)],
-58: [w('peloton','Tabata Ride','Peloton',30,'P3 HIIT. Max output on every 20s push. Stronger than ever.'), w('selfcare','Breathwork','Pvolve',10)],
-59: [w('pvolve','Strength & Sculpt','Pvolve',45,'P3 sculpt. Full body. Add extra set to key exercises.'), grip(3), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-60: [w('peloton','HIIT Ride','Peloton',30,'Intervals. Peak effort.'), w('pvolve','Recover & Stretch','Pvolve',20,'Prioritise recovery to sustain P3 intensity.')],
-61: [w('pvolve','Progressive Weight Training','Pvolve',50,'Lower body power day. Heavy hip hinge, loaded single-leg work.'), grip(3), w('stretch','Hip Flexor & Glute Stretch','Pvolve',10)],
-62: [w('peloton','HIIT & Hills Ride','Peloton',30,'Climb-heavy. Best hill ride of the program.'), w('pvolve',"Women's Health",'Pvolve',20,'Menopause series — bone density and balance.')],
-63: null,
-
-64: [w('pvolve','Progressive Weight Training','Pvolve',50,'W10. You are stronger than week 1. Show it.'), grip(3), w('stretch','Full Body Stretch','Pvolve',10)],
-65: [w('peloton','Tabata Ride','Peloton',30,'Best Tabata of the program. Max cadence and resistance.'), w('selfcare','Meditation','Pvolve',10)],
-66: [w('pvolve','Strength & Sculpt','Pvolve',45,'Full kit. Upper + lower superset with no rest between.'), grip(3), w('stretch','Shoulder & Hip Stretch','Pvolve',10)],
-67: [w('peloton','Intervals Ride','Peloton',30,'Peak interval session.'), w('pvolve','Recover & Stretch','Pvolve',20,'Deep hip work. 2 min holds.')],
-68: [w('pvolve','Progressive Weight Training','Pvolve',50,'Heaviest pull session of program. Rows, band work, shoulder stability.'), grip(3), w('stretch','Upper Body Stretch','Pvolve',10)],
-69: [w('peloton','HIIT Ride','Peloton',30,'W10 closer. Strongest cardio of the program.'), w('pvolve',"Women's Health",'Pvolve',20,'Hormonal health + pelvic floor.')],
-70: null,
-
-71: [w('pvolve','Progressive Weight Training','Pvolve',50,'W11. Final heavy build week.'), grip(3), w('stretch','Full Body Stretch','Pvolve',10)],
-72: [w('peloton','Tabata Ride','Peloton',30,'W11 Tabata. All out.'), w('selfcare','Breathwork','Pvolve',10)],
-73: [w('pvolve','Strength & Sculpt','Pvolve',45,'W11 sculpt. Beat every rep count from W9.'), grip(3), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-74: [w('peloton','HIIT & Hills Ride','Peloton',30,'W11 hills. Heaviest resistance climbs.'), w('pvolve','Recover & Stretch','Pvolve',20,'Thoracic spine + hip capsule.')],
-75: [w('pvolve','Progressive Weight Training','Pvolve',50,'W11 final PWT. Note all weights for program summary.'), grip(3), w('stretch','Upper Body Stretch','Pvolve',10)],
-76: [w('peloton','HIIT Ride','Peloton',30,'Penultimate bootcamp. Max effort.'), w('pvolve',"Women's Health",'Pvolve',20,'Celebrate 76 days.')],
-77: null,
-
-// Deload W12
-78: [w('pvolve','Progressive Weight Training','Pvolve',40,'Deload. Drop 20% weight. Perfect form, full ROM.'), grip(3), w('stretch','Full Body Stretch','Pvolve',10)],
-79: [w('peloton','Low-Impact Ride','Peloton',30,'Deload cardio. Moderate effort only.'), w('selfcare','Meditation','Pvolve',15,'Full session. Prepare mentally for Victory Week.')],
-80: [w('pvolve','Recover & Stretch','Pvolve',35,'Deep joint work. Everything — hips, shoulders, wrists.'), w('stretch','Full Body Stretch','Pvolve',15)],
-81: [w('peloton','Recovery Ride','Peloton',20,'Zone 2 deload.'), w('pvolve','Movement Therapy','Pvolve',20,'Gentle corrective. Nervous system primed for victory week.')],
-82: [w('pvolve','Strength & Sculpt','Pvolve',35,'Light deload sculpt. Smooth and sharp.'), grip(3), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-83: [w('selfcare','Breathwork & Meditation','Pvolve',20,'Full session before Victory Week. Visualise success.'), w('pvolve','Recover & Stretch','Pvolve',20,'Final prep.')],
-84: null,
-
-// Victory W13
-85: [w('pvolve','Progressive Weight Training','Pvolve',50,'VICTORY WEEK. Heaviest weights of the program. Show what 84 days built.'), grip(3), w('stretch','Full Body Stretch','Pvolve',10)],
-86: [w('peloton','Tabata Ride','Peloton',30,'Victory Tabata. Best effort of 90 days.'), w('selfcare','Breathwork','Pvolve',10,'Breathwork to close. 🌿')],
-87: [w('pvolve','Strength & Sculpt','Pvolve',45,'Final sculpt. Full kit. Everything you\'ve learned.'), grip(3), w('stretch','Hip & Shoulder Stretch','Pvolve',10)],
-88: [w('peloton','HIIT Ride','Peloton',30,'Final HIIT ride. Max output.'), w('pvolve','Recover & Stretch','Pvolve',20,'Recover and reflect.')],
-89: [w('pvolve','Progressive Weight Training','Pvolve',50,'Final PWT. Heaviest lift of the program.'), grip(3), w('stretch','Full Body Stretch','Pvolve',10)],
-90: [w('peloton','Victory Ride','Peloton',30,'90 days. Celebrate every pedal stroke. 🎉'), w('pvolve',"Women's Health — Celebration Class",'Pvolve',20,'Final class. You have built something real.'), w('selfcare','Final Meditation','Pvolve',15,'Close the program. Breathe. You did it. 🌿')],
-};
 
 const TYPE_LABELS = {
   pvolve:'Pvolve', peloton:'Peloton', grip:'Grip Work',
@@ -709,7 +661,7 @@ function renderToday(){
             <div class="workout-name">${wk.name}</div>
             <div class="workout-meta">
               <span class="workout-dur">${wk.mins} min</span>
-              <span class="workout-instructor">${wk.platform}</span>
+              <span class="workout-instructor">${wk.instructor}</span>
             </div>
             ${wk.note?`<div class="workout-note">${wk.note}</div>`:''}
             ${wk.type==='grip'?`<div class="grip-badge">🤝 Track in Progress</div>`:''}
@@ -1083,7 +1035,7 @@ function showToast(msg,bg){
   const mLink=document.createElement('link'); mLink.rel='manifest'; mLink.href=URL.createObjectURL(mBlob);
   document.head.appendChild(mLink);
   if('serviceWorker' in navigator){
-    const sw=`const C='move90-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll([self.location.href||'/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+    const sw=`const C='move90-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll([self.location.href||'/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
     navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})),{scope:'./'});
   }
   const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
