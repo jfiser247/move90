@@ -278,6 +278,7 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--whit
 .measure-form { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:14px; }
 .measure-form-title { padding:13px 15px 10px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:.06em; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
 .measure-week-label { font-size:12px; color:var(--gold); font-weight:600; }
+.measure-week-select { background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--gold); font-family:'Syne',sans-serif; font-size:12px; font-weight:600; padding:3px 8px; }
 .measure-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
 .measure-field { background:var(--card); padding:12px 14px; }
 .measure-field label { display:block; font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; font-weight:600; }
@@ -889,18 +890,23 @@ function renderProgress(){
   }
   html+=`</div>`;
 
-  // Measurement form
-  const isBaseline=today<=1&&!state.measurements.some(m=>m.week===0);
-  const formWk=isBaseline?0:currentWk;
-  const formLabel=isBaseline?'SAVE BASELINE':`SAVE WEEK ${currentWk}`;
-  const formTitle=isBaseline?'Week 0 Baseline — Log Tonight':`Log Week ${currentWk}`;
+  // Measurement form — week selector defaults to earliest unlogged week
+  let defaultFormWk=currentWk;
+  for(let w=0;w<=currentWk;w++){
+    if(!state.measurements.some(m=>m.week===w)){defaultFormWk=w;break;}
+  }
+  const wkOptions=Array.from({length:currentWk+1},(_,w)=>{
+    const logged=state.measurements.some(m=>m.week===w);
+    const lbl=w===0?`Baseline${logged?' ✓':''}`:`Week ${w}${logged?' ✓':''}`;
+    return `<option value="${w}"${w===defaultFormWk?' selected':''}>${lbl}</option>`;
+  }).join('');
 
   html+=`
   <div class="section-head">Weekly Measurements</div>
   <div class="measure-form">
     <div class="measure-form-title">
-      <span>${formTitle}</span>
-      <span class="measure-week-label">${isBaseline?'Baseline · Mar 29':`Week ${currentWk} of 13`}</span>
+      <span>Log Measurements</span>
+      <select id="measure-wk-sel" class="measure-week-select" onchange="onMeasureWkChange(parseInt(this.value))">${wkOptions}</select>
     </div>
     <div class="measure-grid">
       <div class="measure-field">
@@ -932,7 +938,7 @@ function renderProgress(){
         <textarea id="m-notes" placeholder="How do your joints feel? Any areas of improvement or tightness?"></textarea>
       </div>
     </div>
-    <button class="measure-save-btn" onclick="saveMeasurement(${formWk})">${formLabel}</button>
+    <button class="measure-save-btn" onclick="saveMeasurementFromForm()">SAVE MEASUREMENTS</button>
   </div>`;
 
   // History
@@ -957,6 +963,8 @@ function renderProgress(){
   }
 
   document.getElementById('progressContent').innerHTML=html;
+  // Pre-populate form with existing data for the default week
+  onMeasureWkChange(defaultFormWk);
 }
 
 function calcStreak(today){
@@ -969,6 +977,20 @@ function calcStreak(today){
   return s;
 }
 
+function onMeasureWkChange(wk){
+  const m=state.measurements.find(m=>m.week===wk);
+  document.getElementById('m-gripdom').value=m?.gripDom||'';
+  document.getElementById('m-gripnon').value=m?.gripNon||'';
+  document.getElementById('m-hipflex').value=m?.hipFlex||'';
+  document.getElementById('m-hiprot').value=m?.hipRot||'';
+  document.getElementById('m-sflex').value=m?.shoulderFlex||'';
+  document.getElementById('m-srot').value=m?.shoulderRot||'';
+  document.getElementById('m-notes').value=m?.notes||'';
+}
+function saveMeasurementFromForm(){
+  const wk=parseInt(document.getElementById('measure-wk-sel').value);
+  saveMeasurement(wk);
+}
 function saveMeasurement(forceWk){
   const gripDom=document.getElementById('m-gripdom').value;
   const gripNon=document.getElementById('m-gripnon').value;
