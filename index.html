@@ -497,6 +497,34 @@ const SCHEDULE = {
 89: [{type:"pvolve",name:"Progressive Weight Training",instructor:"Pvolve",mins:50,note:"Final PWT. Heaviest lift of the program.",pullupNote:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Pvolve",mins:10,note:null,pullupNote:null}],
 90: [{type:"peloton",name:"Victory Ride",instructor:"Peloton",mins:30,note:"90 days. Celebrate every pedal stroke. 🎉",pullupNote:null}, {type:"pvolve",name:"Women's Health — Celebration Class",instructor:"Pvolve",mins:20,note:"Final class. You have built something real.",pullupNote:null}, {type:"selfcare",name:"Final Meditation",instructor:"Pvolve",mins:15,note:"Close the program. Breathe. You did it. 🌿",pullupNote:null}],
 };
+// ── Measurement helpers — generated from Swift profile ──
+function onMeasureWkChange(wk) {
+  const m = state.measurements.find(m => m.week === wk);
+  document.getElementById("m-gripdom").value = m?.gripDom || '';
+  document.getElementById("m-gripnon").value = m?.gripNon || '';
+  document.getElementById("m-hipflex").value = m?.hipFlex || '';
+  document.getElementById("m-hiprot").value = m?.hipRot || '';
+  document.getElementById("m-sflex").value = m?.shoulderFlex || '';
+  document.getElementById("m-srot").value = m?.shoulderRot || '';
+  const notesEl = document.getElementById('m-notes'); if(notesEl) notesEl.value = m?.notes || '';
+}
+function saveMeasurementFromForm() {
+  const wk = parseInt(document.getElementById('measure-wk-sel').value);
+  saveMeasurement(wk);
+}
+function buildWeekOptions(currentWk, defaultWk) {
+  return Array.from({length: currentWk + 1}, (_, w) => {
+    const logged = state.measurements.some(m => m.week === w);
+    const lbl = w === 0 ? `Baseline${logged ? ' ✓' : ''}` : `Week ${w}${logged ? ' ✓' : ''}`;
+    return `<option value="${w}"${w === defaultWk ? ' selected' : ''}>${lbl}</option>`;
+  }).join('');
+}
+function calcDefaultFormWeek(currentWk) {
+  for(let w = 0; w <= currentWk; w++) {
+    if(!state.measurements.some(m => m.week === w)) return w;
+  }
+  return currentWk;
+}
 
 // Pvolve platform URL (filtered to class type)
 function pvolveUrl(classType) {
@@ -890,16 +918,9 @@ function renderProgress(){
   }
   html+=`</div>`;
 
-  // Measurement form — week selector defaults to earliest unlogged week
-  let defaultFormWk=currentWk;
-  for(let w=0;w<=currentWk;w++){
-    if(!state.measurements.some(m=>m.week===w)){defaultFormWk=w;break;}
-  }
-  const wkOptions=Array.from({length:currentWk+1},(_,w)=>{
-    const logged=state.measurements.some(m=>m.week===w);
-    const lbl=w===0?`Baseline${logged?' ✓':''}`:`Week ${w}${logged?' ✓':''}`;
-    return `<option value="${w}"${w===defaultFormWk?' selected':''}>${lbl}</option>`;
-  }).join('');
+  // Measurement form — week selector (logic provided by GEN:SHARED_JS)
+  const defaultFormWk=calcDefaultFormWeek(currentWk);
+  const wkOptions=buildWeekOptions(currentWk,defaultFormWk);
 
   html+=`
   <div class="section-head">Weekly Measurements</div>
@@ -977,20 +998,6 @@ function calcStreak(today){
   return s;
 }
 
-function onMeasureWkChange(wk){
-  const m=state.measurements.find(m=>m.week===wk);
-  document.getElementById('m-gripdom').value=m?.gripDom||'';
-  document.getElementById('m-gripnon').value=m?.gripNon||'';
-  document.getElementById('m-hipflex').value=m?.hipFlex||'';
-  document.getElementById('m-hiprot').value=m?.hipRot||'';
-  document.getElementById('m-sflex').value=m?.shoulderFlex||'';
-  document.getElementById('m-srot').value=m?.shoulderRot||'';
-  document.getElementById('m-notes').value=m?.notes||'';
-}
-function saveMeasurementFromForm(){
-  const wk=parseInt(document.getElementById('measure-wk-sel').value);
-  saveMeasurement(wk);
-}
 function saveMeasurement(forceWk){
   const gripDom=document.getElementById('m-gripdom').value;
   const gripNon=document.getElementById('m-gripnon').value;
