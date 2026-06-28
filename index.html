@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Move · 90">
+<meta name="theme-color" content="#0a0f1a">
+<title>Move · 90 — Strength & Mobility</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0a0f1a;
+  --surface:  #0f1624;
+  --card:     #131d2e;
+  --card2:    #172033;
+  --border:   rgba(255,255,255,0.07);
+  --white:    #eef0ec;
+  --muted:    rgba(238,240,236,0.4);
+  --navy:     #1e3a5f;
+  --sage:     #7aad8a;
+  --sage2:    #5a9470;
+  --sage-dim: rgba(122,173,138,0.15);
+  --rose:     #c97b7b;
+  --gold:     #c9a96e;
+  --lavender: #8fa8cc;
+  --teal:     #4db8a8;
+  --safe-top: env(safe-area-inset-top, 44px);
+  --safe-bot: env(safe-area-inset-bottom, 34px);
+/* Font-size scale — generated from Typography.swift */
+  --fs-display: 72px;
+  --fs-title: 28px;
+  --fs-headline: 24px;
+  --fs-callout: 20px;
+  --fs-body: 19px;
+  --fs-subhead: 18px;
+  --fs-caption: 17px;
+  --fs-micro: 16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { font-size:16px; }
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--white); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
+#app { display:flex; flex-direction:column; height:100dvh; }
+
+/* ── HEADER ── */
+.app-header {
+  padding: calc(var(--safe-top) + 8px) 18px 12px;
+  background: linear-gradient(180deg, #0d1525 0%, transparent 100%);
+  flex-shrink:0; z-index:20;
+  border-bottom: 1px solid var(--border);
+}
+.header-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
+.app-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; letter-spacing:.02em; text-transform:uppercase; }
+.app-title span { color:var(--sage); }
+.header-badges { display:flex; gap:6px; align-items:center; }
+.badge { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; letter-spacing:.06em; padding:4px 10px; border-radius:20px; }
+.badge-day { background:var(--sage); color:#0a0f1a; }
+.badge-program { background:rgba(143,168,204,.2); color:var(--lavender); border:1px solid rgba(143,168,204,.3); }
+.header-row2 { display:flex; align-items:center; justify-content:space-between; }
+.phase-strip { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; color:var(--muted); }
+.morning-tag { font-size:12px; color:var(--sage); font-weight:600; }
+
+/* ── NAV ── */
+.nav-tabs { display:flex; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; z-index:15; }
+.nav-tab { flex:1; padding:10px 4px; text-align:center; font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; transition:color .2s,border-color .2s; }
+.nav-tab.active { color:var(--sage); border-bottom-color:var(--sage); }
+.nav-tab-icon { font-size:15px; display:block; margin-bottom:2px; }
+
+.scroll-view { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+.scroll-view::-webkit-scrollbar { display:none; }
+.screen { display:none; }
+.screen.active { display:block; }
+
+/* ── TODAY ── */
+.today-screen { padding-bottom:calc(var(--safe-bot) + 24px); }
+
+.day-nav { display:flex; align-items:center; padding:10px 16px; gap:10px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:10; }
+.day-nav-btn { width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--white); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.day-nav-center { flex:1; text-align:center; }
+.day-nav-label { font-family:'Syne',sans-serif; font-weight:700; font-size:17px; letter-spacing:.03em; }
+.day-nav-date { font-size:12px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+
+/* MORNING RITUAL BANNER */
+.morning-banner {
+  margin:14px 14px 0;
+  background:linear-gradient(135deg,rgba(122,173,138,.12),rgba(143,168,204,.08));
+  border:1px solid rgba(122,173,138,.25);
+  border-radius:14px;
+  padding:13px 15px;
+}
+.morning-banner-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--sage); margin-bottom:8px; }
+.morning-items { display:flex; flex-direction:column; gap:6px; }
+.morning-item { display:flex; align-items:center; gap:10px; }
+.morning-item-check { width:22px; height:22px; border-radius:50%; border:2px solid rgba(122,173,138,.4); display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; cursor:pointer; transition:all .2s; background:transparent; }
+.morning-item-check.done { background:var(--sage); border-color:var(--sage); color:#0a0f1a; }
+.morning-item-text { font-size:14px; font-weight:500; }
+.morning-item-sub { font-size:12px; color:var(--muted); margin-top:1px; }
+
+/* DAY HERO */
+.day-hero { padding:14px 14px 4px; display:flex; align-items:flex-end; gap:12px; margin-bottom:10px; }
+.day-num-big { font-family:'DM Serif Display',serif; font-size:80px; font-weight:400; line-height:1; color:var(--sage); opacity:.1; flex-shrink:0; }
+.day-phase-info { flex:1; padding-bottom:8px; }
+.day-phase-name { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:5px; }
+.day-prog-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-bottom:5px; }
+.day-prog-fill { height:100%; background:linear-gradient(90deg,var(--sage2),var(--sage)); border-radius:2px; transition:width .4s; }
+.day-prog-lbl { font-size:12px; color:var(--muted); }
+
+/* SECTION DIVIDERS */
+.workout-section-head {
+  padding:6px 14px 6px;
+  font-family:'Syne',sans-serif;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.workout-section-head::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* WORKOUT CARDS */
+.workouts-list { padding:0 14px; display:flex; flex-direction:column; gap:8px; }
+.workout-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:13px 13px;
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  cursor:pointer;
+  transition:border-color .2s,background .2s;
+  position:relative;
+  overflow:hidden;
+}
+.workout-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--card-accent,var(--sage)); border-radius:3px 0 0 3px; }
+.workout-card.done { border-color:rgba(122,173,138,.3); background:rgba(122,173,138,.06); }
+.workout-card.done::before { background:var(--sage); }
+.workout-check { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px; transition:all .2s; background:var(--surface); margin-top:1px; }
+.workout-card.done .workout-check { background:var(--sage); border-color:var(--sage); color:#0a0f1a; }
+.workout-info { flex:1; min-width:0; }
+.workout-type-label { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; margin-bottom:3px; }
+.workout-name { font-family:'DM Serif Display',serif; font-size:17px; font-weight:400; line-height:1.25; margin-bottom:5px; }
+.workout-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.workout-dur { font-size:13px; color:var(--muted); background:var(--surface); padding:2px 8px; border-radius:8px; font-weight:600; }
+.workout-instructor { font-size:13px; color:var(--muted); }
+.workout-note { font-size:13px; color:var(--gold); margin-top:5px; line-height:1.45; font-weight:400; font-style:italic; }
+.grip-badge { display:inline-flex; align-items:center; gap:4px; font-size:12px; background:rgba(201,169,110,.15); color:var(--gold); border-radius:5px; padding:3px 8px; font-weight:600; margin-top:4px; border:1px solid rgba(201,169,110,.25); }
+.platform-link {
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:7px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:7px;
+  padding:4px 10px;
+  font-size:12px; font-weight:600;
+  color:rgba(238,240,236,0.6);
+  text-decoration:none;
+  font-family:'DM Sans',sans-serif;
+}
+.platform-link:active { border-color:rgba(255,255,255,.25); color:var(--white); }
+
+/* card type accents */
+.type-pvolve     { --card-accent:var(--sage); color:var(--sage); }
+.type-peloton    { --card-accent:var(--lavender); color:var(--lavender); }
+.type-grip       { --card-accent:var(--gold); color:var(--gold); }
+.type-meditation { --card-accent:var(--sage); color:var(--sage); }
+.type-mobility { --card-accent:var(--teal); color:var(--teal); }
+.type-selfcare { --card-accent:var(--rose); color:var(--rose); }
+.type-stretch  { --card-accent:rgba(143,168,204,.8); color:var(--lavender); }
+
+.complete-btn { margin:12px 14px 0; padding:14px; background:var(--sage); border:none; border-radius:13px; color:#0a0f1a; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; width:calc(100% - 28px); cursor:pointer; transition:opacity .2s,transform .1s; }
+.complete-btn:active { transform:scale(.98); }
+.complete-btn.all-done { background:var(--sage2); }
+
+.day-notes { margin:10px 14px 0; background:var(--card); border:1px solid var(--border); border-radius:13px; overflow:hidden; }
+.day-notes-header { padding:10px 14px; font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
+.day-notes textarea { width:100%; background:transparent; border:none; outline:none; color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; padding:10px 14px; resize:none; min-height:70px; font-weight:300; }
+.day-notes textarea::placeholder { color:var(--muted); }
+
+.drink-row { margin:10px 14px 0; }
+.drink-toggle { display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--border); border-radius:13px; padding:12px 14px; cursor:pointer; user-select:none; transition:border-color .2s,background .2s; }
+.drink-toggle.drink-on { border-color:rgba(228,100,80,.4); background:rgba(228,100,80,.07); }
+.drink-toggle-label { flex:1; font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.drink-toggle.drink-on .drink-toggle-label { color:#e46450; }
+.drink-badge { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em; padding:3px 9px; border-radius:6px; background:var(--surface); color:var(--muted); }
+.drink-toggle.drink-on .drink-badge { background:rgba(228,100,80,.18); color:#e46450; }
+.drink-budget-row { display:flex; align-items:center; gap:8px; margin:8px 14px 0; padding:8px 14px; background:var(--card); border:1px solid var(--border); border-radius:10px; }
+.drink-budget-label { flex:1; font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.drink-budget-input { width:40px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--white); font-size:15px; text-align:center; padding:3px 4px; font-family:'Syne',sans-serif; font-weight:700; }
+.drink-budget-unit { font-family:'Syne',sans-serif; font-size:11px; color:var(--muted); letter-spacing:.05em; }
+.prog-section-label { font-family:'Syne',sans-serif; font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; padding-left:2px; }
+
+.rest-day-card { margin:16px 14px; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:36px 18px; text-align:center; }
+.rest-day-card .rest-icon { font-size:40px; margin-bottom:10px; }
+.rest-day-card h2 { font-family:'DM Serif Display',serif; font-size:28px; font-weight:400; margin-bottom:8px; }
+.rest-day-card p { font-size:14px; color:var(--muted); line-height:1.6; }
+.rest-note { margin-top:12px; padding:10px 14px; background:rgba(122,173,138,.1); border-radius:9px; font-size:13px; color:var(--sage); }
+
+/* ── SCHEDULE ── */
+.schedule-screen { padding-bottom:calc(var(--safe-bot) + 24px); }
+.phase-head { padding:12px 14px 8px; position:sticky; top:0; z-index:5; background:var(--bg); }
+.phase-head-inner { background:var(--surface); border-radius:10px; padding:9px 13px; display:flex; align-items:center; gap:8px; border:1px solid var(--border); }
+.phase-head-tag { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; padding:3px 8px; border-radius:4px; background:var(--sage); color:#0a0f1a; }
+.phase-head-title { font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; }
+.phase-head-prog { margin-left:auto; font-size:13px; color:var(--muted); }
+.week-section { margin:0 14px 6px; }
+.week-label-s { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:6px 2px 5px; }
+.sched-day-row { display:flex; align-items:center; gap:10px; padding:9px 12px; background:var(--card); border-radius:10px; margin-bottom:5px; cursor:pointer; border:1px solid var(--border); transition:border-color .15s; }
+.sched-day-row:active { border-color:rgba(255,255,255,.15); }
+.sched-day-row.today-row { border-color:var(--sage); }
+.sched-day-row.completed-row { border-color:rgba(122,173,138,.25); }
+.sched-day-row.rest-row { opacity:.4; }
+.sched-day-num { font-family:'DM Serif Display',serif; font-size:20px; width:32px; text-align:center; flex-shrink:0; color:var(--muted); }
+.sched-day-row.today-row .sched-day-num { color:var(--sage); }
+.sched-day-row.completed-row .sched-day-num { color:var(--sage); opacity:.7; }
+.sched-day-info { flex:1; min-width:0; }
+.sched-day-name { font-size:14px; font-weight:500; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sched-day-chips { display:flex; gap:3px; flex-wrap:wrap; }
+.chip { font-size:11px; font-family:'Syne',sans-serif; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:2px 6px; border-radius:4px; }
+.chip-pvolve     { background:rgba(122,173,138,.15); color:var(--sage); }
+.chip-peloton    { background:rgba(143,168,204,.15); color:var(--lavender); }
+.chip-grip       { background:rgba(201,169,110,.15); color:var(--gold); }
+.chip-meditation { background:rgba(96,180,140,.15);  color:var(--sage); }
+.chip-mobility{ background:rgba(77,184,168,.15); color:var(--teal); }
+.chip-selfcare{ background:rgba(201,123,123,.15); color:var(--rose); }
+.chip-rest    { background:rgba(255,255,255,.05); color:var(--muted); }
+.chip-stretch { background:rgba(143,168,204,.1); color:var(--lavender); }
+.sched-day-status { font-size:15px; flex-shrink:0; }
+
+/* Measurement row */
+.measure-day-row {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px;
+  background:rgba(201,169,110,.07);
+  border:1px solid rgba(201,169,110,.2);
+  border-radius:10px; margin-bottom:5px;
+  cursor:pointer;
+}
+.measure-day-icon { font-size:16px; flex-shrink:0; }
+.measure-day-text { flex:1; }
+.measure-day-title { font-size:13px; font-weight:600; color:var(--gold); }
+.measure-day-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.measure-day-done { font-size:14px; flex-shrink:0; }
+
+/* ── PROGRESS ── */
+.progress-screen { padding:14px 14px calc(var(--safe-bot) + 24px); }
+
+.prog-hero { background:linear-gradient(135deg,var(--card) 0%,#0f1e30 100%); border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:14px; }
+.prog-top { display:flex; align-items:center; gap:16px; margin-bottom:14px; }
+.prog-ring-wrap { position:relative; width:96px; height:96px; flex-shrink:0; }
+.prog-ring-svg { transform:rotate(-90deg); }
+.prog-ring-bg { fill:none; stroke:var(--border); stroke-width:7; }
+.prog-ring-fill { fill:none; stroke:url(#sageGrad); stroke-width:7; stroke-linecap:round; transition:stroke-dashoffset .6s ease; }
+.prog-ring-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.prog-pct { font-family:'DM Serif Display',serif; font-size:26px; line-height:1; color:var(--sage); }
+.prog-pct-label { font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
+.prog-right { flex:1; }
+.prog-hero-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-bottom:10px; }
+.prog-stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.prog-stat { text-align:center; background:var(--surface); border-radius:8px; padding:8px 4px; }
+.prog-stat-val { font-family:'DM Serif Display',serif; font-size:22px; line-height:1; margin-bottom:2px; }
+.prog-stat-lbl { font-size:10px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+
+/* GRIP CARD */
+.section-head { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; margin-top:16px; }
+
+.grip-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:12px; }
+.grip-card-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; }
+.grip-hands { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.grip-hand { background:var(--surface); border-radius:10px; padding:12px; text-align:center; border:1px solid var(--border); }
+.grip-hand-label { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; }
+.grip-hand-val { font-family:'DM Serif Display',serif; font-size:28px; color:var(--gold); line-height:1; }
+.grip-hand-unit { font-size:11px; color:var(--muted); margin-top:2px; }
+.grip-note { font-size:13px; color:var(--muted); text-align:center; }
+
+/* ROM CARD */
+.rom-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:12px; }
+.rom-card-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); margin-bottom:14px; }
+.rom-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.rom-item { background:var(--surface); border-radius:9px; padding:11px 12px; border:1px solid var(--border); }
+.rom-label { font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+.rom-val { font-family:'DM Serif Display',serif; font-size:22px; color:var(--teal); line-height:1.1; }
+.rom-unit { font-size:11px; color:var(--muted); }
+.rom-delta { font-size:11px; font-weight:700; margin-left:4px; }
+.delta-pos { color:var(--sage); }
+.delta-neg { color:var(--rose); }
+
+/* MEASURE FORM */
+.measure-form { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:14px; }
+.measure-form-title { padding:13px 15px 10px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:.06em; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.measure-week-label { font-size:12px; color:var(--gold); font-weight:600; }
+.measure-week-select { background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--gold); font-family:'Syne',sans-serif; font-size:12px; font-weight:600; padding:3px 8px; }
+.measure-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+.measure-field { background:var(--card); padding:12px 14px; }
+.measure-field label { display:block; font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; font-weight:600; }
+.measure-field input { width:100%; background:transparent; border:none; outline:none; color:var(--white); font-family:'DM Serif Display',serif; font-size:22px; }
+.measure-field input::placeholder { color:rgba(238,240,236,.15); }
+.measure-unit { font-size:12px; color:var(--muted); margin-left:2px; font-family:'DM Sans',sans-serif; }
+.measure-notes-field { background:var(--card); padding:12px 14px; grid-column:1/-1; border-top:1px solid var(--border); }
+.measure-notes-field textarea { width:100%; background:transparent; border:none; outline:none; color:var(--white); font-family:'DM Sans',sans-serif; font-size:13px; line-height:1.5; resize:none; min-height:50px; }
+.measure-notes-field textarea::placeholder { color:var(--muted); }
+.measure-save-btn { width:100%; padding:14px; background:var(--sage); border:none; color:#0a0f1a; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; }
+.measure-save-btn:active { opacity:.85; }
+
+/* HISTORY TABLE */
+.history-card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-top:4px; }
+.history-row { display:grid; grid-template-columns:52px 1fr 1fr 1fr 1fr; gap:2px; padding:10px 12px; border-bottom:1px solid var(--border); font-size:13px; align-items:center; }
+.history-row:last-child { border-bottom:none; }
+.history-row.hdr { background:var(--surface); font-family:'Syne',sans-serif; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:8px 12px; }
+.history-wk { font-family:'DM Serif Display',serif; font-size:16px; color:var(--gold); }
+.history-val { font-weight:500; font-size:13px; }
+.h-delta { font-size:11px; font-weight:700; }
+.h-pos { color:var(--sage); }
+.h-neg { color:var(--rose); }
+
+/* HEATMAP */
+.heatmap-row { display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; }
+.heatmap-week { display:flex; flex-direction:column; gap:3px; flex-shrink:0; }
+.heatmap-cell { width:16px; height:16px; border-radius:3px; background:var(--card); border:1px solid var(--border); flex-shrink:0; }
+.heatmap-cell.done-cell { background:var(--sage); border-color:var(--sage); opacity:.8; }
+.heatmap-cell.rest-cell { background:rgba(255,255,255,.03); }
+.heatmap-cell.today-cell { border-color:var(--gold); }
+.heatmap-cell.drank-cell { outline:2px solid #39ff14; outline-offset:1px; }
+.heatmap-labels { display:flex; gap:3px; margin-bottom:3px; }
+.heatmap-wk-lbl { width:16px; text-align:center; font-size:8px; color:var(--muted); font-weight:700; flex-shrink:0; font-family:'Syne',sans-serif; }
+
+.empty-history { padding:20px; text-align:center; color:var(--muted); font-size:14px; }
+
+/* TOAST */
+.toast { position:fixed; bottom:calc(var(--safe-bot) + 72px); left:50%; transform:translateX(-50%) translateY(16px); background:var(--sage); color:#0a0f1a; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:.08em; padding:9px 18px; border-radius:20px; opacity:0; transition:all .25s; z-index:100; white-space:nowrap; pointer-events:none; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.workout-card { animation:fadeUp .22s ease both; }
+.workout-card:nth-child(2){animation-delay:.04s}
+.workout-card:nth-child(3){animation-delay:.08s}
+.workout-card:nth-child(4){animation-delay:.12s}
+.workout-card:nth-child(5){animation-delay:.16s}
+.workout-card:nth-child(6){animation-delay:.20s}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="app-header">
+    <div class="header-row1">
+      <div class="app-title">Move <span>·</span> 90</div>
+      <div class="header-badges">
+        <div class="badge badge-program" id="headerPhase">Phase 1</div>
+        <div class="badge badge-day" id="headerBadge">Day 1</div>
+      </div>
+    </div>
+    <div class="header-row2">
+      <div class="phase-strip" id="headerPhaseName">Foundation · Strength & Mobility</div>
+      <div class="morning-tag">🌿 Morning ritual daily</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('today')" id="tab-today"><span class="nav-tab-icon">🌿</span>Today</button>
+    <button class="nav-tab" onclick="switchTab('schedule')" id="tab-schedule"><span class="nav-tab-icon">📋</span>Schedule</button>
+    <button class="nav-tab" onclick="switchTab('progress')" id="tab-progress"><span class="nav-tab-icon">📊</span>Progress</button>
+  </div>
+
+  <div class="scroll-view">
+    <div class="screen active today-screen" id="screen-today">
+      <div class="day-nav">
+        <button class="day-nav-btn" onclick="changeDay(-1)">‹</button>
+        <div class="day-nav-center">
+          <div class="day-nav-label" id="dayNavLabel">Day 1</div>
+          <div class="day-nav-date" id="dayNavDate">Mon, Mar 30</div>
+        </div>
+        <button class="day-nav-btn" onclick="changeDay(1)">›</button>
+      </div>
+      <div id="todayContent"></div>
+    </div>
+
+    <div class="screen schedule-screen" id="screen-schedule">
+      <div id="scheduleContent"></div>
+    </div>
+
+    <div class="screen progress-screen" id="screen-progress">
+      <svg width="0" height="0"><defs>
+        <linearGradient id="sageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#5a9470"/>
+          <stop offset="100%" style="stop-color:#7aad8a"/>
+        </linearGradient>
+      </defs></svg>
+      <div id="progressContent"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// PROGRAM DATA
+// ══════════════════════════════════════════
+const START_DATE = new Date(2026, 5, 30); // Jun 30 2026 (Round 2)
+
+// Peloton instructor slug map
+const INSTRUCTOR_SLUGS = {
+};
+const DAY_DATES = [
+  "Mon Jun 30","Tue Jul 1","Wed Jul 2","Thu Jul 3","Fri Jul 4","Sat Jul 5","Sun Jul 6",
+  "Mon Jul 7","Tue Jul 8","Wed Jul 9","Thu Jul 10","Fri Jul 11","Sat Jul 12","Sun Jul 13",
+  "Mon Jul 14","Tue Jul 15","Wed Jul 16","Thu Jul 17","Fri Jul 18","Sat Jul 19","Sun Jul 20",
+  "Mon Jul 21","Tue Jul 22","Wed Jul 23","Thu Jul 24","Fri Jul 25","Sat Jul 26","Sun Jul 27",
+  "Mon Jul 28","Tue Jul 29","Wed Jul 30","Thu Jul 31","Fri Aug 1","Sat Aug 2","Sun Aug 3",
+  "Mon Aug 4","Tue Aug 5","Wed Aug 6","Thu Aug 7","Fri Aug 8","Sat Aug 9","Sun Aug 10",
+  "Mon Aug 11","Tue Aug 12","Wed Aug 13","Thu Aug 14","Fri Aug 15","Sat Aug 16","Sun Aug 17",
+  "Mon Aug 18","Tue Aug 19","Wed Aug 20","Thu Aug 21","Fri Aug 22","Sat Aug 23","Sun Aug 24",
+  "Mon Aug 25","Tue Aug 26","Wed Aug 27","Thu Aug 28","Fri Aug 29","Sat Aug 30","Sun Aug 31",
+  "Mon Sep 1","Tue Sep 2","Wed Sep 3","Thu Sep 4","Fri Sep 5","Sat Sep 6","Sun Sep 7",
+  "Mon Sep 8","Tue Sep 9","Wed Sep 10","Thu Sep 11","Fri Sep 12","Sat Sep 13","Sun Sep 14",
+  "Mon Sep 15","Tue Sep 16","Wed Sep 17","Thu Sep 18","Fri Sep 19","Sat Sep 20","Sun Sep 21",
+  "Mon Sep 22","Tue Sep 23","Wed Sep 24","Thu Sep 25","Fri Sep 26","Sat Sep 27"
+];
+
+// Full schedule — HIIT-first fasted, then strength, then stretch
+const SCHEDULE = {
+1: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"741a862bedcf4a1294ffbaa7ccb5c062",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2214f2e5ebbedea42b97209d070c5056a095c2fa/img_1738262305_5211a4e41df14451a49b1f002800adbb.png",difficultyRating:3.7,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 1",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 1 → Workout 1 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"c3d246c53b5a47a7a00eb50eb42dd031",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/435008f49f2c67f3f23884d511e46b55600b8403/img_1728677576_c395c9d90ce647888074262ea78ba401.png",difficultyRating:5.7,overallRating:1.00}],
+2: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"c080979653b24f9e8999e5e885bd8d0c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c080979653b24f9e8999e5e885bd8d0c/img_2e5690a7668d4e6dbc045ff7510700f4",difficultyRating:3.8,overallRating:1.00}, {type:"peloton",name:"Sweat Steady: Low Impact Ride",instructor:"Jess King",mins:30,note:"Tabata or intervals. Challenging but joint-friendly.",pullupNote:null,classId:"9adee4b093c84d3ea026e72c44c872da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9adee4b093c84d3ea026e72c44c872da/img_85c297f52a9f4cafbe46862bf46159d8",difficultyRating:7.0,overallRating:0.99}],
+3: [{type:"meditation",name:"Morning Meditation",instructor:"Anna Greenberg",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"9c5ee7d377354297b811aff3ac85a73e",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/a44031be5a0acd0308835cbb3c11d81688b29550/img_1739282875_013debe05d954049b445142991d83ab5.png",difficultyRating:3.4,overallRating:1.00}, {type:"strength",name:"Full Body Strength",instructor:"Katie Wang",mins:30,note:"Peloton strength complement. Full body, moderate load.",pullupNote:null,classId:"37ea2bfbeb694d00a0c812569f9f6d97",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/37ea2bfbeb694d00a0c812569f9f6d97/img_f484645e946d49bb91869f018b459932",difficultyRating:8.0,overallRating:1.00}, {type:"stretch",name:"Mobility for Golfers",instructor:"Selena Samuela",mins:10,note:null,pullupNote:null,classId:"d559e586fb274290bada3692ad580be0",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d559e586fb274290bada3692ad580be0/img_8b90f8ebb84d404abe234c0a9cff268a",difficultyRating:5.4,overallRating:1.00}],
+4: [{type:"meditation",name:"Relaxing Meditation",instructor:"Kirra Michel",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"d354b3e253e3453b9bfa79ccb248180b",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d354b3e253e3453b9bfa79ccb248180b/img_d24e2dfd35ca45b0ad61744264124af9",difficultyRating:4.1,overallRating:1.00}, {type:"peloton",name:"HIIT Ride",instructor:"Robin Arzón",mins:30,note:"Intervals. Push on surges, recover fully between.",pullupNote:null,classId:"b5b59d5f30484173a170dfbcf24b7855",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b5b59d5f30484173a170dfbcf24b7855/img_0023657b9ce543088fed8a9c0609a0fe",difficultyRating:8.9,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:20,note:"Full body recovery. Prioritise hips and thoracic spine.",pullupNote:null,classId:"6989963b485b4e2ca1ba7d32ef693f6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6989963b485b4e2ca1ba7d32ef693f6d/img_a21589b4cc0846c3b4163549f400e85d",difficultyRating:5.0,overallRating:1.00}],
+5: [{type:"meditation",name:"World Mental Health Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"bc3557ed40394dbda4d0179e9f3e7e6a",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/bc3557ed40394dbda4d0179e9f3e7e6a/img_4d0e20a1398747f5b2250eff5a7602e7",difficultyRating:3.3,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 2",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 1 → Workout 2 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Kirra Michel",mins:20,note:null,pullupNote:null,classId:"69d70cebc7ac4ce49432fde38370ff96",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d49f2116351c289f9b1462446f4cfd0530b70318/img_1741289068_d1b375a408374c438fc8b2e0a3b65b29.png",difficultyRating:5.3,overallRating:1.00}],
+6: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"24061b6e3040422bbc879a009fb64339",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b29014d10ccacad9f4ef9cb06fa412e57e1d7dd4/img_1734443550_2096bdb256bf4ce5b6419f2213aee0bf.png",difficultyRating:3.1,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Tunde Oyeneyin",mins:30,note:"End of week push. Full effort.",pullupNote:null,classId:"66d9e601cabc4db48c3f912faa466b3c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/66d9e601cabc4db48c3f912faa466b3c/img_2ebdf10bdb444f2a8d4a90e423fd3e9f",difficultyRating:8.1,overallRating:1.00}, {type:"pvolve",name:"Women's Health — Menopause Series",instructor:"Pvolve",mins:20,note:"Hormonal health class. Pelvic floor + stability.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+7: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"a575c4cd1668469c814aad7a40d2ca34",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/a575c4cd1668469c814aad7a40d2ca34/img_df6d9e964c664245b52690ab4d570a1b",difficultyRating:3.5,overallRating:1.00}],
+8: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"86ed3abb46c24a95bf37e118222e9cd7",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/858660ef428cd1d0efccdfdaefc2ad422e1b6ef9/img_1764721000_9593d9f86b4745c4b024bfb47ac6d6a0.png",difficultyRating:3.6,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 3",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 2 → Workout 1 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"ad0af78bcd4d4d88aaf7347a9bbc5099",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ad0af78bcd4d4d88aaf7347a9bbc5099/img_56809a0ea95f48e99b5e25e6b4ecaf6d",difficultyRating:4.9,overallRating:1.00}],
+9: [{type:"meditation",name:"Gratitude Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"3b3066c5a01744f3b103e28452fd56fd",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/79d0152c97f1572dbd6a73b2045ad69f5e4a0f66/img_1709327492_daaa8fe572064c8a982180d4c6206dbf.png",difficultyRating:4.2,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Robin Arzón",mins:30,note:"20s max / 10s rest × 8. Keep cadence high on push intervals.",pullupNote:null,classId:"e065cff113214adcb67c91a293fde781",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e065cff113214adcb67c91a293fde781/img_7d0388102de7424b8d191d4846e11aa6",difficultyRating:9.1,overallRating:1.00}],
+10: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"21b3778bf5dc46d696ab6ffd5a3cc1b6",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/3f7508e79fcb59d76fdd4589153557d80d5db1ce/img_1733835624_fe6b65ff6222415b845ec025ac57d5ac.png",difficultyRating:3.3,overallRating:1.00}, {type:"strength",name:"Upper Body Strength",instructor:"Robin Arzón",mins:30,note:"Peloton complement. Shoulder press, rows, chest work.",pullupNote:null,classId:"0a6bdcfd41454f998ee676e434065b44",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0a6bdcfd41454f998ee676e434065b44/img_8687dbd59c2d4612bc37787ac6dd1779",difficultyRating:7.8,overallRating:0.99}, {type:"stretch",name:"Foam Rolling: Full Body",instructor:"Hannah Corbin",mins:15,note:null,pullupNote:null,classId:"26b04d05b1bf4185bbf14c44f5a4f058",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c3ffe3dc84169eed1f679d38ef716673239cf1f6/img_1732903098_78710f7b2aae430caa0ef8111d98ce85.png",difficultyRating:5.0,overallRating:1.00}],
+11: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"50be55f1ffc64a5280e9405b16bc9469",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/50be55f1ffc64a5280e9405b16bc9469/img_461f285f762b4c088663e57a2d8e1508",difficultyRating:3.6,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Emma Lovewell",mins:30,note:"30s on / 30s recover. Controlled breathing throughout.",pullupNote:null,classId:"4f4847e37aee49688e8861c90ebff78f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4f4847e37aee49688e8861c90ebff78f/img_b9a6af383e9e4a868e268cf123270419",difficultyRating:8.0,overallRating:1.00}, {type:"stretch",name:"Hip Mobility",instructor:"Kirra Michel",mins:10,note:"Hip mobility. Hold each stretch 60s+.",pullupNote:null,classId:"895c9b39f8164f43894c36fbffece9da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f5e4d846a756c12b34742ed53f8e2f5761951ef0/img_1740072877_692f0438c6d04934bf4889cf50a65035.png",difficultyRating:5.6,overallRating:0.99}],
+12: [{type:"meditation",name:"Morning Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"eebdf9f047b043ab88fac5c7e40a4482",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/eebdf9f047b043ab88fac5c7e40a4482/img_d847ff8632fc40d38984421ee78eaa95",difficultyRating:3.4,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 4",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 2 → Workout 2 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"328de22de20343e8bf4a16e38f0089c7",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4a4ca76eab4e7f2323a85d231e4ca08b007e8c93/img_1734124419_c9c17e148591469689c2a73104514583.png",difficultyRating:5.2,overallRating:1.00}],
+13: [{type:"meditation",name:"New Year's Day Meditation",instructor:"Anna Greenberg",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"bf84c4bc05e84c46ad4e172c3bf04df5",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/bf84c4bc05e84c46ad4e172c3bf04df5/img_538151a8b5bc4ddcba6b7c610ce062c5",difficultyRating:3.5,overallRating:1.00}, {type:"peloton",name:"Low Impact Ride",instructor:"Emma Lovewell",mins:30,note:"High energy, joint-safe.",pullupNote:null,classId:"091c64730b4144209cd135553b640010",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/091c64730b4144209cd135553b640010/img_1a2a7ad630d94f6a9c4be533ab504a63",difficultyRating:6.3,overallRating:1.00}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Menopause support series. Bone health focus.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+14: [{type:"meditation",name:"Morning Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"8582ff57d14142b4b5c0fe134a45140f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/8582ff57d14142b4b5c0fe134a45140f/img_667934beea6d42a49fac146ab5a36f90",difficultyRating:4.0,overallRating:1.00}],
+15: [{type:"meditation",name:"Metta Meditation",instructor:"Aditi Shah",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"01903e7aaacf497ea9af65d34d96fdf2",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/3246fde2ac97f90fce2b6ed2f8ac1c691e9b881b/img_1741372392_20a8382f3c9e4dbeac72ef9f484b6747.png",difficultyRating:3.7,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 5",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 3 → Workout 1 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"f74872b67d30448a8a86beff7b686628",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/abebcdc9c637698fe07793942ff40b97dfadd6fa/img_1738700359_01d9faa5d64b413cbba799de4f47aad4.png",difficultyRating:4.8,overallRating:1.00}],
+16: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"cc346870dc0040788eae7a10525f29d1",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/cc346870dc0040788eae7a10525f29d1/img_c934e3fdc537410d9af7637634877a7f",difficultyRating:3.8,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Ally Love",mins:30,note:"Seated climbs. Moderate-heavy resistance.",pullupNote:null,classId:"9087a54a35bd4743abb9208175faf816",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9087a54a35bd4743abb9208175faf816/img_2e32011b77f34536bcdfdfc71976a811",difficultyRating:8.0,overallRating:1.00}],
+17: [{type:"meditation",name:"Breathing Meditation",instructor:"Kirra Michel",mins:20,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"fe503efef4044afa81d22716e8b78d4b",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2623d992c27a159e06336780f13dad6895b49926/img_1698796932_776d0632105b4c82b363138fcc161027.png",difficultyRating:5.6,overallRating:1.00}, {type:"strength",name:"Full Body Strength",instructor:"Rebecca Kennedy",mins:30,note:"Peloton complement. Progressive overload from W1.",pullupNote:null,classId:"cef32dd2fc564962bc133532f9e1a491",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/cef32dd2fc564962bc133532f9e1a491/img_b2e2328051af4b538aeb11ed91a69b9f",difficultyRating:8.0,overallRating:0.99}, {type:"stretch",name:"Full Body Stretch",instructor:"Rebecca Kennedy",mins:20,note:null,pullupNote:null,classId:"8e234b90915e47e88dba9be1117e8514",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/8e234b90915e47e88dba9be1117e8514/img_fee92d5f7fa248168aad1152c9a01409",difficultyRating:4.7,overallRating:1.00}],
+18: [{type:"meditation",name:"Calming Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"848c2bf3f37246cbb2a4f405bbf978ee",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2855a0f6d49d34df98e47663e02af38907048d6c/img_1741126459_13907eea829f4ce1ba2c0d83e235c5bb.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Robin Arzón",mins:30,note:"Final HIIT of Phase 1. Best effort.",pullupNote:null,classId:"97c94a8b5fbe425f8f16558fddc1946e",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/97c94a8b5fbe425f8f16558fddc1946e/img_bf48b7e03abc4994b996edf41a04c176",difficultyRating:8.6,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch: HiLit W4 D6",instructor:"Rebecca Kennedy",mins:20,note:"Extra time on hips — 3 min per side minimum.",pullupNote:null,classId:"6096cf96a1554655ad6cf795de8a4b6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6096cf96a1554655ad6cf795de8a4b6d/img_6fffe653ad2f4a02a7faff0f3abe6889",difficultyRating:4.9,overallRating:1.00}],
+19: [{type:"meditation",name:"Morning Meditation",instructor:"Chelsea Jackson Roberts",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"f555956cd44840e6b1f439464c9983c0",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f555956cd44840e6b1f439464c9983c0/img_098f2b70035c4ee59ee7465e0ba72308",difficultyRating:3.4,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 6",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 3 → Workout 2 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Strength Work",instructor:"Self-Led",mins:10,note:"Dead hangs 3×20s · Towel rows 3×10 · Farmer carry 30s each hand. Track both hands in Progress.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"629b7a531f704e83b5afa8bc854fbc10",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/629b7a531f704e83b5afa8bc854fbc10/img_be28ad640afd436c86fa94fdac5fe197",difficultyRating:4.6,overallRating:1.00}],
+20: [{type:"meditation",name:"Breathing Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"f1ddc75dabb94b13a3e227aef667e3ed",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/1c5c1eecc00af76274e692a2b62ba431d00b4d6b/img_1719425936_b981a6da29cf47198a0912fdea7fb134.png",difficultyRating:3.5,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Tunde Oyeneyin",mins:30,note:"Phase 1 final cardio. Push harder than W1.",pullupNote:null,classId:"f0fbbeca319a48a6b642030888ee11dc",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f0fbbeca319a48a6b642030888ee11dc/img_72a343cb9889435192b4bed67f486727",difficultyRating:8.0,overallRating:0.99}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Pelvic floor + core stability series.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+21: [{type:"meditation",name:"Morning Meditation",instructor:"Chelsea Jackson Roberts",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"de1425bf56304043a90f5b2674f1e7eb",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/3465573dc498dfb1383e25d14215baccbde66a91/img_1760016599_efd1a57e4f104bfebf59cb55b426f0d4.png",difficultyRating:3.4,overallRating:1.00}],
+22: [{type:"meditation",name:"Morning Meditation",instructor:"Chelsea Jackson Roberts",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"37cf48584a7d4af585ce3f7a82c98d74",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/37cf48584a7d4af585ce3f7a82c98d74/img_a0f49db9b264495d9e64654c66850113",difficultyRating:3.5,overallRating:1.00}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:30,note:"Gentle corrective movement. Joints and connective tissue focus.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:15,note:"Long holds. Completely restorative.",pullupNote:null,classId:"c3d246c53b5a47a7a00eb50eb42dd031",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/435008f49f2c67f3f23884d511e46b55600b8403/img_1728677576_c395c9d90ce647888074262ea78ba401.png",difficultyRating:5.7,overallRating:1.00}],
+23: [{type:"meditation",name:"Kindness Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"2a2775d2aaff4074b2aa36d9fd47093c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/61bf02b96684c5f56d57f967c46590ad350f7d71/img_1738857717_17411eef43984adbb5d69242114de0a2.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Sweat Steady: Low Impact Ride",instructor:"Jess King",mins:30,note:"Zone 2 only. Easy spin. Heart rate under 120.",pullupNote:null,classId:"9adee4b093c84d3ea026e72c44c872da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9adee4b093c84d3ea026e72c44c872da/img_85c297f52a9f4cafbe46862bf46159d8",difficultyRating:7.0,overallRating:0.99}],
+24: [{type:"meditation",name:"Relaxing Meditation",instructor:"Kirra Michel",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"f420301770394e7d80d818bf39e69278",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/497c73d1f608a0e49c32d6a53de76e8144a77b9a/img_1763513339_86218f68bdb44a9ab130917592efa96d.png",difficultyRating:3.9,overallRating:1.00}, {type:"stretch",name:"Mobility for Golfers",instructor:"Selena Samuela",mins:10,note:"Hip deep dive. 90/90 stretching. Full hip capsule work.",pullupNote:null,classId:"d559e586fb274290bada3692ad580be0",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d559e586fb274290bada3692ad580be0/img_8b90f8ebb84d404abe234c0a9cff268a",difficultyRating:5.4,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:20,note:"Thoracic rotation and shoulder CAR drills.",pullupNote:null,classId:"6989963b485b4e2ca1ba7d32ef693f6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6989963b485b4e2ca1ba7d32ef693f6d/img_a21589b4cc0846c3b4163549f400e85d",difficultyRating:5.0,overallRating:1.00}],
+25: [{type:"meditation",name:"Relaxing Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"50ba333a9325444e8e06d17ac2b72c59",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/50ba333a9325444e8e06d17ac2b72c59/img_5bfb12fe44d64fd392f9b843e3aa69d4",difficultyRating:3.3,overallRating:1.00}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:20,note:"Corrective movement. Gentle only.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+26: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"bc869fe076ab46c7a34b1ceaf7f2d3a8",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e61651fe160f22ab5cdbc951e0f1877bc52d84d6/img_1712857892_0bd8d11ab28f4d428932b78fb2ff0553.png",difficultyRating:3.7,overallRating:1.00}, {type:"peloton",name:"Low Impact Ride",instructor:"Emma Lovewell",mins:30,note:"Easy movement. Zone 2. Flush recovery.",pullupNote:null,classId:"091c64730b4144209cd135553b640010",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/091c64730b4144209cd135553b640010/img_1a2a7ad630d94f6a9c4be533ab504a63",difficultyRating:6.3,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Kirra Michel",mins:20,note:null,pullupNote:null,classId:"69d70cebc7ac4ce49432fde38370ff96",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d49f2116351c289f9b1462446f4cfd0530b70318/img_1741289068_d1b375a408374c438fc8b2e0a3b65b29.png",difficultyRating:5.3,overallRating:1.00}],
+27: [{type:"meditation",name:"Relaxing Meditation",instructor:"Chelsea Jackson Roberts",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"57f38ce67fe447a7b4f42466b0197a00",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0d18afca6be644cefa16dce945ff433356392b59/img_1730377797_f128f50a69f74758b1871dcd4d3d0c34.png",difficultyRating:3.9,overallRating:1.00}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:20,note:"Pre-Phase 2 mobility. Full body. Note any areas of tightness.",pullupNote:null,classId:"ad0af78bcd4d4d88aaf7347a9bbc5099",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ad0af78bcd4d4d88aaf7347a9bbc5099/img_56809a0ea95f48e99b5e25e6b4ecaf6d",difficultyRating:4.9,overallRating:1.00}],
+28: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"093ae7d2238a4649bcdc0d9c20c5a751",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/093ae7d2238a4649bcdc0d9c20c5a751/img_b13f1eac4b624775a060ccd535142d69",difficultyRating:3.4,overallRating:1.00}],
+29: [{type:"meditation",name:"Gratitude Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"8ac3ac39267944b28b7c92320ce21c15",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/eae5e61e81b5706e88b681da15435ea4f40bd7db/img_1730249211_962a5b90efbc4952a272667454055382.png",difficultyRating:3.5,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 7",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 4 → Workout 1 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"c3d246c53b5a47a7a00eb50eb42dd031",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/435008f49f2c67f3f23884d511e46b55600b8403/img_1728677576_c395c9d90ce647888074262ea78ba401.png",difficultyRating:5.7,overallRating:1.00}],
+30: [{type:"meditation",name:"Meditation for Anxiety",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"7182c7b4e53145f9945da4f3ab3083a1",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f91d2c04435caf31de5348a355133e21968927a6/img_1715373828_d4ee449b5790432fb74bb10cff161ec7.png",difficultyRating:4.0,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Robin Arzón",mins:30,note:"P2 cardio. Push harder than Phase 1. Stronger now.",pullupNote:null,classId:"e065cff113214adcb67c91a293fde781",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e065cff113214adcb67c91a293fde781/img_7d0388102de7424b8d191d4846e11aa6",difficultyRating:9.1,overallRating:1.00}],
+31: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"aa4baa6cbfae4a749ccfdc24b570db55",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d7fcb5bc13d4f3ad80e60ccf5f86e465f4777563/img_1729358448_76ac84e365c34eb787ee60a5e768598c.png",difficultyRating:3.7,overallRating:1.00}, {type:"strength",name:"Full Body Strength",instructor:"Katie Wang",mins:30,note:"Peloton complement. Heavier than Phase 1.",pullupNote:null,classId:"37ea2bfbeb694d00a0c812569f9f6d97",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/37ea2bfbeb694d00a0c812569f9f6d97/img_f484645e946d49bb91869f018b459932",difficultyRating:8.0,overallRating:1.00}, {type:"stretch",name:"Mobility for Golfers",instructor:"Selena Samuela",mins:10,note:null,pullupNote:null,classId:"d559e586fb274290bada3692ad580be0",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d559e586fb274290bada3692ad580be0/img_8b90f8ebb84d404abe234c0a9cff268a",difficultyRating:5.4,overallRating:1.00}],
+32: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"46891d2b791c4b77a8ff90134ebe0000",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b950db762692193ff7d03a391f8a1c166615ce1e/img_1734798766_37add410f38647d1a25645908466888d.png",difficultyRating:3.5,overallRating:1.00}, {type:"peloton",name:"HIIT Ride",instructor:"Robin Arzón",mins:30,note:"Intervals. Full recovery between sets.",pullupNote:null,classId:"b5b59d5f30484173a170dfbcf24b7855",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b5b59d5f30484173a170dfbcf24b7855/img_0023657b9ce543088fed8a9c0609a0fe",difficultyRating:8.9,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:20,note:"Hip priority. 60-90s holds.",pullupNote:null,classId:"6989963b485b4e2ca1ba7d32ef693f6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6989963b485b4e2ca1ba7d32ef693f6d/img_a21589b4cc0846c3b4163549f400e85d",difficultyRating:5.0,overallRating:1.00}],
+33: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"69e8d9915d1240ecad4652828deda18a",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ddf745301c5498c2a046ae0545cb84d8054c7516/img_1725364240_5a8803772e2c40fe948b8a5332e54973.png",difficultyRating:3.5,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 8",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 4 → Workout 2 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Kirra Michel",mins:20,note:null,pullupNote:null,classId:"69d70cebc7ac4ce49432fde38370ff96",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d49f2116351c289f9b1462446f4cfd0530b70318/img_1741289068_d1b375a408374c438fc8b2e0a3b65b29.png",difficultyRating:5.3,overallRating:1.00}],
+34: [{type:"meditation",name:"Calming Meditation",instructor:"Anna Greenberg",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"a4de7e132e57436bab877a14d2aaffe3",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2c9205d538ff299cc57964cdec7eb9512de81840/img_1698772329_3ad4536fa7904008835f6995ef90d032.png",difficultyRating:3.2,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Robin Arzón",mins:45,note:"Climb-focused. Heavy resistance seated climbs.",pullupNote:null,classId:"264eb4655e7548a28fea9c1f5a21ad56",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/264eb4655e7548a28fea9c1f5a21ad56/img_64b897dbb5fb47c38e8beb71231ce215",difficultyRating:8.5,overallRating:1.00}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Menopause series. Balance + bone density.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+35: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"ad3429c50a1542d0991279f4029bde95",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/210fd3b862fef5abd9cd7ea2afdc71bb2b4995c2/img_1704316505_48269012e7544d548a75b91bba3000ae.png",difficultyRating:3.3,overallRating:1.00}],
+36: [{type:"meditation",name:"Morning Meditation",instructor:"Anna Greenberg",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"34a60eab34de4fdeaff08ffdce9cac73",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/34a60eab34de4fdeaff08ffdce9cac73/img_2ea1a3b8a8564bdd86f2b9f83cf15979",difficultyRating:3.3,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 9",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 5 → Workout 1 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"ad0af78bcd4d4d88aaf7347a9bbc5099",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ad0af78bcd4d4d88aaf7347a9bbc5099/img_56809a0ea95f48e99b5e25e6b4ecaf6d",difficultyRating:4.9,overallRating:1.00}],
+37: [{type:"meditation",name:"Body Scan Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"2d532c59b8a3443793ca99979b1142c7",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/dbdd2f6069ac60ef3040dcb6dabd958d87551bb2/img_1720543651_820b69154fd246a5baff6f0ef16dd959.png",difficultyRating:3.1,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Robin Arzón",mins:30,note:"Lactic threshold. Max cadence on push intervals.",pullupNote:null,classId:"97c94a8b5fbe425f8f16558fddc1946e",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/97c94a8b5fbe425f8f16558fddc1946e/img_bf48b7e03abc4994b996edf41a04c176",difficultyRating:8.6,overallRating:1.00}],
+38: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"2b5310b71180480ba1122d03386f6940",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/1d3fefaebc89e6d4b1cb62323826d42611ebb0ab/img_1715600588_ffca91a4e3ff446882f5997d0cc7a0b4.png",difficultyRating:3.6,overallRating:1.00}, {type:"strength",name:"Full Body Strength",instructor:"Rebecca Kennedy",mins:30,note:"Peloton complement. Shoulder + hip stability.",pullupNote:null,classId:"cef32dd2fc564962bc133532f9e1a491",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/cef32dd2fc564962bc133532f9e1a491/img_b2e2328051af4b538aeb11ed91a69b9f",difficultyRating:8.0,overallRating:0.99}, {type:"stretch",name:"Foam Rolling: Full Body",instructor:"Hannah Corbin",mins:15,note:null,pullupNote:null,classId:"26b04d05b1bf4185bbf14c44f5a4f058",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c3ffe3dc84169eed1f679d38ef716673239cf1f6/img_1732903098_78710f7b2aae430caa0ef8111d98ce85.png",difficultyRating:5.0,overallRating:1.00}],
+39: [{type:"meditation",name:"Mental Health Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"b8833bb584724833aea78a742a81054f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b8833bb584724833aea78a742a81054f/img_132bb744eba8405b8f1b8c1761d62d01",difficultyRating:3.6,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Tunde Oyeneyin",mins:30,note:"Steady-state + surge pattern.",pullupNote:null,classId:"66d9e601cabc4db48c3f912faa466b3c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/66d9e601cabc4db48c3f912faa466b3c/img_2ebdf10bdb444f2a8d4a90e423fd3e9f",difficultyRating:8.1,overallRating:1.00}, {type:"stretch",name:"Hip Mobility",instructor:"Kirra Michel",mins:10,note:"Focus: thoracic spine and hip flexors.",pullupNote:null,classId:"895c9b39f8164f43894c36fbffece9da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f5e4d846a756c12b34742ed53f8e2f5761951ef0/img_1740072877_692f0438c6d04934bf4889cf50a65035.png",difficultyRating:5.6,overallRating:0.99}],
+40: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"253a47537af24162ad9a96d8140c2373",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/33e02c991bddaf7ef47fee5c7bab6ea7fc2e5d3f/img_1722383068_51138af8b4f04910a9cc452a33ec8671.png",difficultyRating:4.1,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 10",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 5 → Workout 2 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"328de22de20343e8bf4a16e38f0089c7",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4a4ca76eab4e7f2323a85d231e4ca08b007e8c93/img_1734124419_c9c17e148591469689c2a73104514583.png",difficultyRating:5.2,overallRating:1.00}],
+41: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"7a586b7cc86f41258499c7138dc62106",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/bf3c90b7f629b4496ff91b66f69d4c29eb7ca0d1/img_1723730055_c6ea8d54d76842c5a30f6892e17dd059.png",difficultyRating:3.5,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Emma Lovewell",mins:30,note:"W6 closer. Stronger than 5 weeks ago.",pullupNote:null,classId:"4f4847e37aee49688e8861c90ebff78f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4f4847e37aee49688e8861c90ebff78f/img_b9a6af383e9e4a868e268cf123270419",difficultyRating:8.0,overallRating:1.00}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Cycle support + joint care focus.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+42: [{type:"meditation",name:"Deep Relaxation Meditation",instructor:"Chelsea Jackson Roberts",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"d40fdebce2bc48f18faed5c56164fb8e",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d40fdebce2bc48f18faed5c56164fb8e/img_a24203ad5faf404ea85288c1fe9bc23b",difficultyRating:3.5,overallRating:1.00}],
+43: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"e9583ca085824a9faf70216d7ee8e44e",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e9583ca085824a9faf70216d7ee8e44e/img_9d7c051a3c8a40a499c3e29018909dbb",difficultyRating:3.1,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 11",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 6 → Workout 1 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"f74872b67d30448a8a86beff7b686628",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/abebcdc9c637698fe07793942ff40b97dfadd6fa/img_1738700359_01d9faa5d64b413cbba799de4f47aad4.png",difficultyRating:4.8,overallRating:1.00}],
+44: [{type:"meditation",name:"Relaxing Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"beb6ac8b714b40a9aace7533b5010b2c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b612650359b9372274c8c4b1310596fff3ca8f45/img_1717543697_32d5e58418f34d33a557c7f5cedcbd52.png",difficultyRating:4.3,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Ally Love",mins:30,note:"Phase 1 peak cardio. Best effort on every interval.",pullupNote:null,classId:"3c3c789b666546df8210838a3a68dee4",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/3c3c789b666546df8210838a3a68dee4/img_78e9f91b9dc9412889447b0769dcede1",difficultyRating:8.6,overallRating:1.00}],
+45: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"287f996f9c594c36ba0df8fb974c3bce",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6559f1bce6977433a32d430b117460c92cccdb9e/img_1727784874_a03d68eb98844c038faaf523f7efb61d.png",difficultyRating:3.6,overallRating:1.00}, {type:"strength",name:"Full Body Strength",instructor:"Jess Sims",mins:30,note:"Peloton complement. Final Phase 1 session.",pullupNote:null,classId:"52c2c906d56a4c99be8881cae3009ca9",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/52c2c906d56a4c99be8881cae3009ca9/img_acad157cbf454e8b916b52fa756071c8",difficultyRating:7.6,overallRating:0.99}, {type:"stretch",name:"Full Body Stretch",instructor:"Rebecca Kennedy",mins:20,note:null,pullupNote:null,classId:"8e234b90915e47e88dba9be1117e8514",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/8e234b90915e47e88dba9be1117e8514/img_fee92d5f7fa248168aad1152c9a01409",difficultyRating:4.7,overallRating:1.00}],
+46: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"e7ff1c341f0c4707a42fd223d4969fab",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d19af6468c19b2fb42b1f9bb0fc710d5b4e40246/img_1736534039_86483590093a4b28aa21e1af9dbacad3.png",difficultyRating:3.6,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Ally Love",mins:30,note:"Strongest ride yet.",pullupNote:null,classId:"9087a54a35bd4743abb9208175faf816",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9087a54a35bd4743abb9208175faf816/img_2e32011b77f34536bcdfdfc71976a811",difficultyRating:8.0,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch: HiLit W4 D6",instructor:"Rebecca Kennedy",mins:20,note:"Full body decompression before transition week.",pullupNote:null,classId:"6096cf96a1554655ad6cf795de8a4b6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6096cf96a1554655ad6cf795de8a4b6d/img_6fffe653ad2f4a02a7faff0f3abe6889",difficultyRating:4.9,overallRating:1.00}],
+47: [{type:"meditation",name:"Calming Meditation",instructor:"Chelsea Jackson Roberts",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"98b9665b23b84a6fa1289b2fdf04aab5",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/8e34a80b6881ec534ffe74410729842473aa1e8d/img_1729773167_5e4c50b6c55e416f8dbdd7cb38aa8f54.png",difficultyRating:3.3,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro Workout 12",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 6 → Workout 2 · 7 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Progressive Overload",instructor:"Self-Led",mins:12,note:"Plate pinches 3×20s · Wrist curls 3×15 · Band finger extensions 2×20. Heavier than Phase 1.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"629b7a531f704e83b5afa8bc854fbc10",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/629b7a531f704e83b5afa8bc854fbc10/img_be28ad640afd436c86fa94fdac5fe197",difficultyRating:4.6,overallRating:1.00}],
+48: [{type:"meditation",name:"Peace Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"06e4ab05c3e244999da535ad73fdd078",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e02cde3d7c9302503de8ccedf38d73e467f0021b/img_1717504687_6248abcac0744e368973f4389e70e047.png",difficultyRating:3.2,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Tunde Oyeneyin",mins:30,note:"Phase 1 final cardio. Leave it all on the bike.",pullupNote:null,classId:"f0fbbeca319a48a6b642030888ee11dc",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f0fbbeca319a48a6b642030888ee11dc/img_72a343cb9889435192b4bed67f486727",difficultyRating:8.0,overallRating:0.99}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Celebrate 7 weeks. Hormonal + strength focus.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+49: [{type:"meditation",name:"Happiness Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"3cdcf51307ff424399fb3b4e40fda8bf",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c0c10043ca2b7a81c80b9029da2c41a0912df5de/img_1741981343_9a3163ff4a954bda834aa82c61eccca6.png",difficultyRating:3.5,overallRating:1.00}],
+50: [{type:"meditation",name:"Relaxing Meditation",instructor:"Chelsea Jackson Roberts",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"b24efc3806c54389bb9bba71db2e79bc",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0a309013f342637a2cc0432473e2fd51a389f3ad/img_1715644025_cc433f7ea3764f62a06b39a7d6c80015.png",difficultyRating:3.8,overallRating:1.00}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:30,note:"Nervous system reset. Gentle corrective movement.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"c3d246c53b5a47a7a00eb50eb42dd031",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/435008f49f2c67f3f23884d511e46b55600b8403/img_1728677576_c395c9d90ce647888074262ea78ba401.png",difficultyRating:5.7,overallRating:1.00}],
+51: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"9dd84e0c7ae64279826bda5be8bf1c28",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/46a48ee0b1e9a4011fe87460df9c8c843011cf15/img_1726615360_6adfcafebdb14d468cf172c7e9e28dc9.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Sweat Steady: Low Impact Ride",instructor:"Jess King",mins:30,note:"Zone 1-2 only. Flush and recover.",pullupNote:null,classId:"9adee4b093c84d3ea026e72c44c872da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9adee4b093c84d3ea026e72c44c872da/img_85c297f52a9f4cafbe46862bf46159d8",difficultyRating:7.0,overallRating:0.99}],
+52: [{type:"meditation",name:"Mental Health Meditation",instructor:"Anna Greenberg",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"68f1ad0c64d44c56b4ad102a5c176ecc",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f48202ee3c0f2d9c46081a9a2cf39e6906be003b/img_1716323913_aa7c96ef17ed4b6ea972194f85fd7cd0.png",difficultyRating:3.3,overallRating:1.00}, {type:"stretch",name:"Mobility for Golfers",instructor:"Selena Samuela",mins:10,note:"Joint mobility deep dive. Hips, shoulders, wrists.",pullupNote:null,classId:"d559e586fb274290bada3692ad580be0",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d559e586fb274290bada3692ad580be0/img_8b90f8ebb84d404abe234c0a9cff268a",difficultyRating:5.4,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:20,note:"Wrist flexion / extension drills. Grip recovery.",pullupNote:null,classId:"6989963b485b4e2ca1ba7d32ef693f6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6989963b485b4e2ca1ba7d32ef693f6d/img_a21589b4cc0846c3b4163549f400e85d",difficultyRating:5.0,overallRating:1.00}],
+53: [{type:"meditation",name:"Metta Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"40fc5b13bd3846c4a08bdc36448d614d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/85ad487bf10666eb317d07a0ffc128bf3ee3e23f/img_1732306046_1bbdd392ba574ef382323fdb06f77c09.png",difficultyRating:3.5,overallRating:1.00}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:20,note:"Light corrective only. Set intentions for Phase 3.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+54: [{type:"meditation",name:"Calming Meditation",instructor:"Kirra Michel",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"fcb741ade1f04bed9068f718ddbb736a",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/296e132a80ba7776be20efa2b620e00acabb5565/img_1719963261_dc836eb82f9a412b9e3da23ccf0713ab.png",difficultyRating:3.9,overallRating:1.00}, {type:"peloton",name:"Low Impact Ride",instructor:"Emma Lovewell",mins:30,note:"Easy. Zone 2.",pullupNote:null,classId:"091c64730b4144209cd135553b640010",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/091c64730b4144209cd135553b640010/img_1a2a7ad630d94f6a9c4be533ab504a63",difficultyRating:6.3,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Kirra Michel",mins:20,note:null,pullupNote:null,classId:"69d70cebc7ac4ce49432fde38370ff96",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d49f2116351c289f9b1462446f4cfd0530b70318/img_1741289068_d1b375a408374c438fc8b2e0a3b65b29.png",difficultyRating:5.3,overallRating:1.00}],
+55: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"4f16b4ef12bb4a219a16d7c5248a571b",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ef13ed2038a744e4af5457dae73ba9078b29d115/img_1707137421_6be8f064780846ed8ecfc5a0d528adc2.png",difficultyRating:3.7,overallRating:1.00}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:20,note:"Prepare the body for Phase 3. Hip + shoulder priority.",pullupNote:null,classId:"ad0af78bcd4d4d88aaf7347a9bbc5099",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ad0af78bcd4d4d88aaf7347a9bbc5099/img_56809a0ea95f48e99b5e25e6b4ecaf6d",difficultyRating:4.9,overallRating:1.00}],
+56: [{type:"meditation",name:"Calming Meditation",instructor:"Aditi Shah",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"6f0118abc32e45618d77a4b76c9edbd8",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/bb07419d39b695c4f5726a6ff655b85aeca774bc/img_1682774656_1b00432dd6f344878693686e1d77573a.png",difficultyRating:3.1,overallRating:1.00}],
+57: [{type:"meditation",name:"Happiness Meditation",instructor:"Chelsea Jackson Roberts",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"a9f191aee3124e089d791666f9ea17ab",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ce2ffa012e8e537705ab32965e17701710a931ad/img_1728570997_729e4961993e401ea216d1ee03fdb63d.png",difficultyRating:3.4,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 1",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 7 → Workout 1 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"c3d246c53b5a47a7a00eb50eb42dd031",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/435008f49f2c67f3f23884d511e46b55600b8403/img_1728677576_c395c9d90ce647888074262ea78ba401.png",difficultyRating:5.7,overallRating:1.00}],
+58: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"4a0db606685f43dfa947eabf42ec2d7d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e83265fa17e0b02a118a4e5da47870ff44d466b3/img_1732021294_cb9ff214c7124699a1f2738e1cad76a1.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Robin Arzón",mins:30,note:"P3 HIIT. Max output on every 20s push.",pullupNote:null,classId:"e065cff113214adcb67c91a293fde781",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/e065cff113214adcb67c91a293fde781/img_7d0388102de7424b8d191d4846e11aa6",difficultyRating:9.1,overallRating:1.00}],
+59: [{type:"meditation",name:"Breathing Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"dd3fe5bb4ccd420da9bdd2761a265611",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9a1b8a67abbcdfe1b67823bc987004e890cc9fdb/img_1730486364_7cc5ce2d8bd44415afd356218a5c5cf0.png",difficultyRating:3.6,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 2",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 7 → Workout 2 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Mobility for Golfers",instructor:"Selena Samuela",mins:10,note:null,pullupNote:null,classId:"d559e586fb274290bada3692ad580be0",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d559e586fb274290bada3692ad580be0/img_8b90f8ebb84d404abe234c0a9cff268a",difficultyRating:5.4,overallRating:1.00}],
+60: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"3d06cad952d943279679a50d97e5f52a",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0128033aa27e6e6079857b619303f6466681667a/img_1709039492_1320bb458c584485913822f29869b982.png",difficultyRating:3.2,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Robin Arzón",mins:45,note:"Intervals. Peak effort.",pullupNote:null,classId:"264eb4655e7548a28fea9c1f5a21ad56",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/264eb4655e7548a28fea9c1f5a21ad56/img_64b897dbb5fb47c38e8beb71231ce215",difficultyRating:8.5,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:20,note:"Prioritise recovery to sustain intensity.",pullupNote:null,classId:"6989963b485b4e2ca1ba7d32ef693f6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6989963b485b4e2ca1ba7d32ef693f6d/img_a21589b4cc0846c3b4163549f400e85d",difficultyRating:5.0,overallRating:1.00}],
+61: [{type:"meditation",name:"Acceptance Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"bfa4c42523de40faba9055e902dcd238",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c917e12eed44c1b181efb7302e2b4be1b7fc1a48/img_1711570528_90b25e538de943eeb97de800f73bd384.png",difficultyRating:2.5,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 3",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 7 → Workout 3 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Kirra Michel",mins:20,note:null,pullupNote:null,classId:"69d70cebc7ac4ce49432fde38370ff96",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d49f2116351c289f9b1462446f4cfd0530b70318/img_1741289068_d1b375a408374c438fc8b2e0a3b65b29.png",difficultyRating:5.3,overallRating:1.00}],
+62: [{type:"meditation",name:"Happiness Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"a0d1a481481b460ab8fbe9336e9e19d1",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/a94beaea8ce19e593495b200c26ef796871a74ef/img_1716295206_ee940de5ef3045c8a4028add93a12e73.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Robin Arzón",mins:45,note:"Climb-heavy. Best hill ride of the program.",pullupNote:null,classId:"6dd8eb77fd484b75ada064e945f96b15",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6dd8eb77fd484b75ada064e945f96b15/img_777e5f374ada4e7399a2115a36e4eb2c",difficultyRating:8.6,overallRating:1.00}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Menopause series — bone density and balance.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+63: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"f8d9c1c4db744bdaaea0afe046ec1bf6",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/cf529b35f673322f77a17f2b71478d01fec9d4e0/img_1742308933_262cf5c747284dcf9421d30916aaba1f.png",difficultyRating:3.6,overallRating:1.00}],
+64: [{type:"meditation",name:"Calming Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"7fc9732059ec45a7b4c5dfc00a1f5d5f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/69deff9e6cd49d67f8c163924ef387f2646f1787/img_1692723748_bb9e4afe5e2749009e324c49a0423dc6.png",difficultyRating:3.3,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 4",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 8 → Workout 1 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Lower Body Mobility",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"ad0af78bcd4d4d88aaf7347a9bbc5099",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ad0af78bcd4d4d88aaf7347a9bbc5099/img_56809a0ea95f48e99b5e25e6b4ecaf6d",difficultyRating:4.9,overallRating:1.00}],
+65: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"23152b6dccdc420ba47b4bab9a6e9628",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/00c6be795dc3e665d91b61646107926b70d4b76f/img_1725648835_c86b50c50c6347c691af2cb82cc2cb7e.png",difficultyRating:3.3,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Robin Arzón",mins:30,note:"Best Tabata of the program. Max cadence and resistance.",pullupNote:null,classId:"97c94a8b5fbe425f8f16558fddc1946e",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/97c94a8b5fbe425f8f16558fddc1946e/img_bf48b7e03abc4994b996edf41a04c176",difficultyRating:8.6,overallRating:1.00}],
+66: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"caa9cdff80b94207b7cf651c9efdf9ed",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/caa9cdff80b94207b7cf651c9efdf9ed/img_6680d7246bc84466bdcbcf4543b678b2",difficultyRating:3.1,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 5",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 8 → Workout 2 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Foam Rolling: Full Body",instructor:"Hannah Corbin",mins:15,note:null,pullupNote:null,classId:"26b04d05b1bf4185bbf14c44f5a4f058",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c3ffe3dc84169eed1f679d38ef716673239cf1f6/img_1732903098_78710f7b2aae430caa0ef8111d98ce85.png",difficultyRating:5.0,overallRating:1.00}],
+67: [{type:"meditation",name:"Holiday Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"8abb8761421b40a8998664c9168bae9a",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/5c8eaef1feb2737000e4b17582bb0ce0be51118c/img_1703166047_e1a58f9f19dd4da78ddd13e68a3c5a68.png",difficultyRating:2.9,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Cody Rigsby",mins:45,note:"Peak interval session.",pullupNote:null,classId:"fbe0b5f9d2fa4948981d4c187f2cc9cf",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/fbe0b5f9d2fa4948981d4c187f2cc9cf/img_38ab03573ee84a428a4983954d410485",difficultyRating:8.1,overallRating:1.00}, {type:"stretch",name:"Hip Mobility",instructor:"Kirra Michel",mins:10,note:"Deep hip work. 2 min holds.",pullupNote:null,classId:"895c9b39f8164f43894c36fbffece9da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f5e4d846a756c12b34742ed53f8e2f5761951ef0/img_1740072877_692f0438c6d04934bf4889cf50a65035.png",difficultyRating:5.6,overallRating:0.99}],
+68: [{type:"meditation",name:"Calming Meditation",instructor:"Aditi Shah",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"7c1a129cc3a549e3901aeb777bc020dd",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/018c4311a5653cdc282ed073894ce6925cb02950/img_1713874531_3d9f97ae4c624112b3d2dcbc3938e198.png",difficultyRating:3.2,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 6",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 8 → Workout 3 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:15,note:null,pullupNote:null,classId:"328de22de20343e8bf4a16e38f0089c7",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4a4ca76eab4e7f2323a85d231e4ca08b007e8c93/img_1734124419_c9c17e148591469689c2a73104514583.png",difficultyRating:5.2,overallRating:1.00}],
+69: [{type:"meditation",name:"Happiness Meditation",instructor:"Chelsea Jackson Roberts",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"fff7deec60ac498598cfa0c3a6b54370",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/43f42318fd7c75c216b9e8fcd3c081af3e0717ec/img_1696289081_8b54e3cb42064409b56835b2066c616b.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Intervals Ride",instructor:"Alex Toussaint",mins:45,note:"W10 closer. Strongest cardio of the program.",pullupNote:null,classId:"0ec496f82a4949c3b55e3cd1a7aae464",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0ec496f82a4949c3b55e3cd1a7aae464/img_5a0fb0eb87f547f39e4d382e618ea8a6",difficultyRating:8.5,overallRating:1.00}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Hormonal health + pelvic floor.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+70: [{type:"meditation",name:"Gratitude Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"025bcc40d8d24078985417a04d4c1ee3",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0fac15be487e9906c25c04f0c55f7d2bd8fef668/img_1723594348_20fa3b25448649ef9f469359741b5c19.png",difficultyRating:4.3,overallRating:1.00}],
+71: [{type:"meditation",name:"Morning Meditation",instructor:"Chelsea Jackson Roberts",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"1dc2ffa3311844aca7622655d2b72fa2",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/453749a4da4301699e969fbf7c4a4f37d3c64560/img_1732196514_adbe77e0e0e6488b9e280c237cae0644.png",difficultyRating:3.4,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 7",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 9 → Workout 1 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"f74872b67d30448a8a86beff7b686628",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/abebcdc9c637698fe07793942ff40b97dfadd6fa/img_1738700359_01d9faa5d64b413cbba799de4f47aad4.png",difficultyRating:4.8,overallRating:1.00}],
+72: [{type:"meditation",name:"Deep Relaxation Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"e10a3c71cdf44b7dafde80d1129ca468",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0583eeb1b7af7a0c34123177be2771ae67b01e5d/img_1729643014_41e45d646c4b4e35bbaaca3cc3638c89.png",difficultyRating:3.5,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Ally Love",mins:30,note:"W11 Tabata. All out.",pullupNote:null,classId:"3c3c789b666546df8210838a3a68dee4",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/3c3c789b666546df8210838a3a68dee4/img_78e9f91b9dc9412889447b0769dcede1",difficultyRating:8.6,overallRating:1.00}],
+73: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"5fc562e1f5c347f6b465ac027da86af4",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/39570329e5296baf20e3cfedf8dbee594c2606ca/img_1685965542_77563d522a5743bf84853137d8d0be3c.png",difficultyRating:3.1,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 8",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 9 → Workout 2 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Rebecca Kennedy",mins:20,note:null,pullupNote:null,classId:"8e234b90915e47e88dba9be1117e8514",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/8e234b90915e47e88dba9be1117e8514/img_fee92d5f7fa248168aad1152c9a01409",difficultyRating:4.7,overallRating:1.00}],
+74: [{type:"meditation",name:"Sleep Meditation",instructor:"Kirra Michel",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"16c44e6521a843fcbde0feb15f07507c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ef64a5a707a857b1a51bfcda6863ecbdebd26157/img_1710006988_eeb3a36b95e84446bcbe0386b622eb35.png",difficultyRating:3.2,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Tunde Oyeneyin",mins:45,note:"W11 hills. Heaviest resistance climbs.",pullupNote:null,classId:"71f832451e6541f49c3cf33182c61446",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/71f832451e6541f49c3cf33182c61446/img_49c6eb3f1b874c9289b7f8658783dae3",difficultyRating:8.1,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch: HiLit W4 D6",instructor:"Rebecca Kennedy",mins:20,note:"Thoracic spine + hip capsule.",pullupNote:null,classId:"6096cf96a1554655ad6cf795de8a4b6d",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/6096cf96a1554655ad6cf795de8a4b6d/img_6fffe653ad2f4a02a7faff0f3abe6889",difficultyRating:4.9,overallRating:1.00}],
+75: [{type:"meditation",name:"Breathing Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"db3a3318ccaa411fa0c82285c9e983c3",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/29a2121b3e79c167e494730e827b595ff8983b80/img_1731698476_24c544e354964c7ca4057f5bff29e492.png",difficultyRating:3.6,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 9",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 9 → Workout 3 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"629b7a531f704e83b5afa8bc854fbc10",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/629b7a531f704e83b5afa8bc854fbc10/img_be28ad640afd436c86fa94fdac5fe197",difficultyRating:4.6,overallRating:1.00}],
+76: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"a12deee9db864fb78e836e0dee186205",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/f5b99f6a7a423eba9a8485297481cbf85507a1bc/img_1737472439_e68db1e6943d4bb5be02959aaebbd6d6.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Tunde Oyeneyin",mins:45,note:"Penultimate cardio. Max effort.",pullupNote:null,classId:"21ccd16c842e48a18a23576f8905d212",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/21ccd16c842e48a18a23576f8905d212/img_9c60aa5c6f844b1884836d2483715242",difficultyRating:8.4,overallRating:1.00}, {type:"pvolve",name:"Women's Health",instructor:"Pvolve",mins:20,note:"Celebrate 76 days.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+77: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"2877979391e941a69eb0c02a011303ed",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2877979391e941a69eb0c02a011303ed/img_0ba1ef4794814ba4adb5459017037ea0",difficultyRating:3.7,overallRating:1.00}],
+78: [{type:"meditation",name:"Flow & Let Go Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"7177f56a1406411b904c7ab2499bd44a",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/7177f56a1406411b904c7ab2499bd44a/img_e0dff5300e594a1e9296ea4e8822d9e3",difficultyRating:3.2,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 10",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 10 → Workout 1 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Joslyn Thompson Rule",mins:20,note:null,pullupNote:null,classId:"2dc8de02198d4fbea86eabc9818e47ff",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2dc8de02198d4fbea86eabc9818e47ff/img_aa04cb58c3f74e809d9f800e85b1a8c5",difficultyRating:4.7,overallRating:1.00}],
+79: [{type:"meditation",name:"Gratitude Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"02a09d5ba94e4436bc9d475ff1cce167",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4a61553c1cc6ddc2cdd44236bca25f358c81d9b3/img_1758025510_c9c531a7a37e497a8df6e773d38fbcc7.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Sweat Steady: Low Impact Ride",instructor:"Jess King",mins:30,note:"Deload cardio. Moderate effort only.",pullupNote:null,classId:"9adee4b093c84d3ea026e72c44c872da",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/9adee4b093c84d3ea026e72c44c872da/img_85c297f52a9f4cafbe46862bf46159d8",difficultyRating:7.0,overallRating:0.99}],
+80: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"8fb9afc6318347a89a0f1343845a465f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/1676348bd4d9bc7a3ca6af3788e7adbd78c93ae2/img_1721649381_e85033cfb9164cc48a69e727688c4a67.png",difficultyRating:3.8,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:15,note:"Deep joint work. Everything — hips, shoulders, wrists.",pullupNote:null,classId:"5b0d275c562a4ab4923348ea8f66d125",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/5b0d275c562a4ab4923348ea8f66d125/img_e2deecebce1e452891e3997a9bfcbfd4",difficultyRating:4.5,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Adrian Williams",mins:20,note:null,pullupNote:null,classId:"fce9334be1d14c06ba001eac8940b7bb",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/fce9334be1d14c06ba001eac8940b7bb/img_cb9d923123844d26a79bb3da0bd1e5f1",difficultyRating:4.4,overallRating:1.00}],
+81: [{type:"meditation",name:"Relaxing Meditation",instructor:"Aditi Shah",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"7be4d6e734ab42569f66fa8a2607dd44",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b5be125bdf5a84dd5f062912751bc39e871436c4/img_1714325455_fbcb3bebab8b45b198575fad2143ff42.png",difficultyRating:3.4,overallRating:1.00}, {type:"peloton",name:"Low Impact Ride",instructor:"Emma Lovewell",mins:30,note:"Zone 2 deload.",pullupNote:null,classId:"091c64730b4144209cd135553b640010",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/091c64730b4144209cd135553b640010/img_1a2a7ad630d94f6a9c4be533ab504a63",difficultyRating:6.3,overallRating:1.00}, {type:"pvolve",name:"Movement Therapy",instructor:"Pvolve",mins:20,note:"Gentle corrective. Nervous system primed for Victory Week.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+82: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"deb1384439784f08a9e89e1728f0991c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b9af4bdd892fc8e9416b6013318e2cb31f9329d1/img_1738073223_5178e2b5e35e42f8bac5e2a0996981f5.png",difficultyRating:3.8,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 11",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 10 → Workout 2 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Full Body Stretch",instructor:"Callie Gullickson",mins:10,note:null,pullupNote:null,classId:"749e8a9037b7434c8cd3ed0aa79215c1",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/2a527f2302906b6e59a34e859ab611de04bf9a7b/img_1727114118_125c383086414235a6d1f071e8000de4.png",difficultyRating:4.4,overallRating:1.00}],
+83: [{type:"meditation",name:"Meditation for Healing",instructor:"Kirra Michel",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"ae236382243541a48299b165af5b1697",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/d1b35499f91a627b53bd49d9e916a45defecbd86/img_1713914903_1cb809afd8f54b498f717d3f47f62cd4.png",difficultyRating:4.2,overallRating:1.00}, {type:"stretch",name:"Full Body Stretch",instructor:"Ben Alldis",mins:15,note:"Final prep before Victory Week.",pullupNote:null,classId:"4be6585b3bc14a6d8459c15b5798f2a4",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4be6585b3bc14a6d8459c15b5798f2a4/img_86e3bb591c6c49598e6ca1110067b134",difficultyRating:4.4,overallRating:1.00}],
+84: [{type:"meditation",name:"Calming Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"80d4b28911e44a658270f2ca40b11e99",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/24ff333f6681301373d258881f981144202a380d/img_1691342268_8761113ff4e84bd389198274518b24ff.png",difficultyRating:3.4,overallRating:1.00}],
+85: [{type:"meditation",name:"Relaxing Meditation",instructor:"Kirra Michel",mins:15,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"ca35311f6b9f472eb01060eaecb863ad",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/4091c4c692d5397e16b8671ef51d3e897c57e5e7/img_1710286927_db02a409cb6e4c1e9fdc27c4e792ff9f.png",difficultyRating:4.5,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 12",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 10 → Workout 3 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Foam Rolling: HiLit W3 D1",instructor:"Rebecca Kennedy",mins:10,note:null,pullupNote:null,classId:"1bf3bec5b3ef403f9ee1aa618fca2baa",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/1bf3bec5b3ef403f9ee1aa618fca2baa/img_3aebb5d1d3b447acab81d5315de8dd40",difficultyRating:4.5,overallRating:1.00}],
+86: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"35ca0cd03003415ba8f9bd671407333f",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/0bc3302554a7d644cb5f220da1606d50cd5f4453/img_1721046762_faec12f327f24490b35dddd2e3c41d7e.png",difficultyRating:3.6,overallRating:1.00}, {type:"peloton",name:"Tabata Ride",instructor:"Hannah Frankson",mins:30,note:"Victory Tabata. Best effort of 90 days.",pullupNote:null,classId:"b00987775f184d1391c73c3dc66811e7",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/b00987775f184d1391c73c3dc66811e7/img_e18db0a42fbb4c7b93bb1db3c98f91cf",difficultyRating:8.2,overallRating:1.00}],
+87: [{type:"meditation",name:"Morning Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"3626625ccb85450cbfb46dc0daff4b21",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/06475c0a387ed6ea604aa8b8ccb8b45703d0e2f1/img_1712778982_00079340ed6d4155969ba3effeb295d1.png",difficultyRating:3.4,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 13",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 11 → Workout 1 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Foam Rolling: Quads & Hamstrings",instructor:"Hannah Corbin",mins:10,note:null,pullupNote:null,classId:"cfd92bba225f428ab8e99331a287d5de",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/5a40d8ab29c8fd9626833e8ec48ea079431d0dfe/img_1769739959_61f904aef11943499435a81feff70bb6.png",difficultyRating:4.8,overallRating:1.00}],
+88: [{type:"meditation",name:"Gratitude Meditation",instructor:"Chelsea Jackson Roberts",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"991775d2bb1a456583c9d8a9bcebdcf5",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/1f216c8c755f0037803a8fd0b1156aa37a074c20/img_1726143562_64f8858133f7484e83445ee8d99a6421.png",difficultyRating:3.5,overallRating:1.00}, {type:"peloton",name:"Intervals & Arms Ride",instructor:"Emma Lovewell",mins:45,note:"Final HIIT ride. Max output.",pullupNote:null,classId:"5d9a569896eb4d79b0f2c258b217b7a8",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/5d9a569896eb4d79b0f2c258b217b7a8/img_9567543ce7ea49249b6b6ef9a449683c",difficultyRating:8.0,overallRating:1.00}, {type:"stretch",name:"Michael Bublé Full Body Stretch",instructor:"Adrian Williams",mins:20,note:"Recover and reflect.",pullupNote:null,classId:"cfe69f07bc004880bf2d354a112b4865",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/cfe69f07bc004880bf2d354a112b4865/img_e49f09f8def3456aa11f7e2cd21d1d4c",difficultyRating:4.3,overallRating:1.00}],
+89: [{type:"meditation",name:"Relaxing Meditation",instructor:"Aditi Shah",mins:10,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"79bc4e4212a441b2bb0cd367f1098077",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/ef4977f1bb7c2d54de51dfec02c707f7f4e38fb5/img_1706534955_2dbef65bd83c493199753c98d793beff.png",difficultyRating:3.7,overallRating:1.00}, {type:"strength",name:"Ben Bruno — Intro P2 Workout 14",instructor:"Ben Bruno",mins:45,note:"Open Bruno Strong app → Week 11 → Workout 2 · 6 exercises · ~45 min",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"grip",name:"Grip Max Effort",instructor:"Self-Led",mins:12,note:"AMRAP dead hang · Loaded carries 45s · Towel pull-ups if able. Beat last week's time.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"stretch",name:"Foam Rolling: Full Body",instructor:"Hannah Corbin",mins:15,note:null,pullupNote:null,classId:"375a7d259ddd407da86277f650786bf6",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/375a7d259ddd407da86277f650786bf6/img_ab448856e36c4b618ad684acebd80be5",difficultyRating:5.0,overallRating:0.99}],
+90: [{type:"meditation",name:"Calming Meditation",instructor:"Anna Greenberg",mins:5,note:"Daily Peloton meditation. Start centered.",pullupNote:null,classId:"55665a8bc80246b8a960237fa25fa76c",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/c87b42e6ed1f2846e9c75e17516b8e9d0ffe00d6/img_1719335451_9d87a1f281b84ec98c7167125a51566d.png",difficultyRating:3.1,overallRating:1.00}, {type:"peloton",name:"HIIT & Hills Ride",instructor:"Camila Ramón",mins:45,note:"90 days. Celebrate every pedal stroke. 🎉",pullupNote:null,classId:"597ed43d8438430cb0218999b8a7b7d6",imageUrl:"https://s3.amazonaws.com/peloton-ride-images/597ed43d8438430cb0218999b8a7b7d6/img_f1df790f4a4f44e5b3da5489865af07a",difficultyRating:8.6,overallRating:1.00}, {type:"pvolve",name:"Women's Health — Celebration Class",instructor:"Pvolve",mins:20,note:"Final class. You have built something real.",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}, {type:"selfcare",name:"Final Meditation",instructor:"Pvolve",mins:15,note:"Close the program. Breathe. You did it. 🌿",pullupNote:null,classId:null,imageUrl:null,difficultyRating:null,overallRating:null}],
+};
+// ── Measurement helpers — generated from Swift profile ──
+function onMeasureWkChange(wk) {
+  const m = state.measurements.find(m => m.week === wk);
+  document.getElementById("m-gripdom").value = m?.gripDom || '';
+  document.getElementById("m-gripnon").value = m?.gripNon || '';
+  document.getElementById("m-hipflex").value = m?.hipFlex || '';
+  document.getElementById("m-hiprot").value = m?.hipRot || '';
+  document.getElementById("m-sflex").value = m?.shoulderFlex || '';
+  document.getElementById("m-srot").value = m?.shoulderRot || '';
+  const notesEl = document.getElementById('m-notes'); if(notesEl) notesEl.value = m?.notes || '';
+}
+function saveMeasurementFromForm() {
+  const wk = parseInt(document.getElementById('measure-wk-sel').value);
+  saveMeasurement(wk);
+}
+function buildWeekOptions(currentWk, defaultWk) {
+  return Array.from({length: currentWk + 1}, (_, w) => {
+    const logged = state.measurements.some(m => m.week === w);
+    const lbl = w === 0 ? `Baseline${logged ? ' ✓' : ''}` : `Week ${w}${logged ? ' ✓' : ''}`;
+    return `<option value="${w}"${w === defaultWk ? ' selected' : ''}>${lbl}</option>`;
+  }).join('');
+}
+function calcDefaultFormWeek(currentWk) {
+  for(let w = 0; w <= currentWk; w++) {
+    if(!state.measurements.some(m => m.week === w)) return w;
+  }
+  return currentWk;
+}
+
+// Pvolve platform URL (filtered to class type)
+function pvolveUrl(classType) {
+  const urls = {
+    'Progressive Weight Training': 'https://app.pvolve.com/classes/categories/weight-training',
+    'Strength & Sculpt':           'https://app.pvolve.com/classes/categories/strength-and-sculpt',
+    'Recover & Stretch':           'https://app.pvolve.com/classes/categories/recover-and-stretch',
+    "Women's Health":              'https://app.pvolve.com/classes/categories/womens-health',
+    'Meditation':                  'https://app.pvolve.com/classes/categories/meditation',
+    'Movement Therapy':            'https://app.pvolve.com/classes/categories/movement-therapy',
+  };
+  return urls[classType] || 'https://app.pvolve.com/classes';
+}
+
+// Peloton URL for low-impact HIIT
+function pelotonUrl(instructor, mins) {
+  const slugs = {
+    'Olivia Amato':  '584db5b4-94f2-4eef-9e8d-a82571cebd6e',
+    'Robin Arzón':   'e0b8c7c2-4ae2-4e2d-8285-1ff990a9cb0b',
+    'Alex Toussaint':'01b8b926-0f79-4a55-892d-5ae7f17e09ec',
+    'Emma Lovewell': '3ba2b53e-a32e-4ab2-aed3-c16e5d83a00b',
+    'Leanne Hainsby':'4904612e-0a87-4b77-a259-eff1d82e3da7',
+    'Jess Sims':     '0e836c79-48e1-4b3a-a197-d6e0e0d11c5c',
+  };
+  const id = slugs[instructor]||'';
+  let params = `duration=${mins}&difficulty_level=intermediate&sort_by=top_rated`;
+  const fullParams = id ? `${params}&instructor_id=${id}` : params;
+  return `https://members.onepeloton.com/classes/cycling#${fullParams}`;
+}
+
+// Take 10 — Petra Kolber (10-min daily movement on Peloton)
+const T10_URL = 'https://members.onepeloton.com/classes/yoga#sort_by=original_air_time&duration=10';
+
+const TYPE_LABELS = {
+  strength:'Strength', pvolve:'Movement', peloton:'Peloton', grip:'Grip Work',
+  mobility:'Mobility', selfcare:'Self-Care', stretch:'Stretch', meditation:'Mindfulness',
+};
+
+// Peloton discipline slug for URL building
+const TYPE_DISCIPLINE_M = {
+  peloton:'cycling', meditation:'meditation',
+};
+
+const PHASES = [
+  {days:[1,21],  name:'Foundation',     label:'Phase 1', color:'var(--sage)'},
+  {days:[22,28], name:'Active Recovery',label:'Recovery',color:'var(--gold)'},
+  {days:[29,49], name:'Build',          label:'Phase 2', color:'var(--lavender)'},
+  {days:[50,56], name:'Active Recovery',label:'Recovery',color:'var(--gold)'},
+  {days:[57,84], name:'Peak',           label:'Phase 3', color:'var(--teal)'},
+  {days:[85,90], name:'Victory Week',   label:'Victory', color:'var(--rose)'},
+];
+
+const WK_STARTS=['Jun 30','Jul 7','Jul 14','Jul 21','Jul 28','Aug 4','Aug 11','Aug 18','Aug 25','Sep 1','Sep 8','Sep 15','Sep 22'];
+const WK_ENDS  =['Jul 6','Jul 13','Jul 20','Jul 27','Aug 3','Aug 10','Aug 17','Aug 24','Aug 31','Sep 7','Sep 14','Sep 21','Sep 27'];
+
+// ── STATE ──
+let state = { viewingDay:1, completed:{}, morningDone:{}, dayNotes:{}, measurements:[], drinkDays:{}, drinkBudget:1 };
+
+function getTodayDay() {
+  const t=new Date(); t.setHours(0,0,0,0);
+  const s=new Date(START_DATE); s.setHours(0,0,0,0);
+  return Math.max(1,Math.min(90,Math.floor((t-s)/86400000)+1));
+}
+function loadState() {
+  try{ const s=localStorage.getItem('move90v2'); if(s) state={...state,...JSON.parse(s)}; }catch(e){}
+  // First-run migration from Round 1 (move90v1): carry forward grip/mobility measurements only.
+  // All day-specific data (notes, completions, drinkDays, morningDone) intentionally reset
+  // for the new program starting Jun 30 2026.
+  if(!state.migratedFromV1){
+    try{
+      const old=localStorage.getItem('move90v1');
+      if(old){
+        const prev=JSON.parse(old);
+        if(prev.measurements && prev.measurements.length) state.measurements=prev.measurements;
+        if(prev.drinkBudget) state.drinkBudget=prev.drinkBudget;
+      }
+    }catch(e){}
+    state.migratedFromV1=true;
+    try{ localStorage.setItem('move90v2',JSON.stringify(state)); }catch(e){}
+  }
+  state.viewingDay=getTodayDay();
+}
+function saveState() {
+  try{ localStorage.setItem('move90v2',JSON.stringify(state)); }catch(e){}
+}
+function isWorkoutDone(day,i){ return !!state.completed[`${day}-${i}`]; }
+function isDayFullyDone(day){
+  const ws=SCHEDULE[day]; if(!ws) return false;
+  return ws.every((_,i)=>isWorkoutDone(day,i));
+}
+function getCompletedCount(){ let n=0; for(let d=1;d<=90;d++) if(isDayFullyDone(d)) n++; return n; }
+function getPhase(day){
+  return PHASES.find(p=>day>=p.days[0]&&day<=p.days[1])||PHASES[0];
+}
+
+// ── RENDER TODAY ──
+function renderToday(){
+  const day=state.viewingDay, todayDay=getTodayDay();
+  const phase=getPhase(day);
+  const workouts=SCHEDULE[day];
+  const pct=Math.round((day/90)*100);
+  const done=getCompletedCount();
+
+  document.getElementById('headerBadge').textContent=`Day ${todayDay}`;
+  document.getElementById('headerPhase').textContent=getPhase(todayDay).label;
+  document.getElementById('headerPhaseName').textContent=`${getPhase(todayDay).name} · Strength & Mobility`;
+  document.getElementById('dayNavLabel').textContent=`Day ${day}`;
+  document.getElementById('dayNavDate').textContent=DAY_DATES[day-1]||'';
+
+  // Morning ritual check items
+  const mk=`morning-${day}`;
+  const md=state.morningDone[mk]||{jfl:false,walk:false};
+  const morningHtml=`
+  <div class="morning-banner">
+    <div class="morning-banner-title">🌿 Morning Ritual — Every Day</div>
+    <div class="morning-items">
+      <div class="morning-item">
+        <div class="morning-item-check ${md.jfl?'done':''}" onclick="toggleMorning(${day},'jfl')">${md.jfl?'✓':''}</div>
+        <div>
+          <div class="morning-item-text">Take 10 · Petra</div>
+          <div class="morning-item-sub">10 min · Daily movement + joint mobility · <a href="${T10_URL}" target="_blank" style="color:var(--sage);text-decoration:none">Open Peloton →</a></div>
+        </div>
+      </div>
+      <div class="morning-item">
+        <div class="morning-item-check ${md.walk?'done':''}" onclick="toggleMorning(${day},'walk')">${md.walk?'✓':''}</div>
+        <div>
+          <div class="morning-item-text">Walk</div>
+          <div class="morning-item-sub">10–20 min · Outdoor walk · Fresh air + gentle movement</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  let html = morningHtml;
+  html += `
+  <div class="day-hero">
+    <div class="day-num-big">${day}</div>
+    <div class="day-phase-info">
+      <div class="day-phase-name" style="color:${phase.color}">${phase.label} · ${phase.name}</div>
+      <div class="day-prog-bar"><div class="day-prog-fill" style="width:${pct}%"></div></div>
+      <div class="day-prog-lbl">${done} of 90 days complete · ${pct}%</div>
+    </div>
+  </div>`;
+
+  // Notes + drink at the top — visible before scrolling to workouts
+  // Monday: drink budget check-in
+  if(day % 7 === 1) {
+    const wkNumM = Math.ceil(day / 7);
+    const wkStartM = (wkNumM-1)*7+1;
+    const wkTodayM = getTodayDay();
+    let wkDrinksM = 0;
+    for(let d=wkStartM; d<=Math.min(wkNumM*7, wkTodayM); d++) { if(state.drinkDays[d]) wkDrinksM++; }
+    const overM = wkDrinksM > state.drinkBudget;
+    html+=`
+    <div class="measure-day-row" onclick="switchTab('progress')" style="margin:10px 14px 0;border-radius:12px;${overM?'border-color:rgba(228,100,80,.5);background:rgba(228,100,80,.07)':''}">
+      <div class="measure-day-icon">🍷</div>
+      <div class="measure-day-text">
+        <div class="measure-day-title" style="color:${overM?'#e46450':'var(--sage)'}">W${wkNumM} Drink Budget · ${wkDrinksM}/${state.drinkBudget} day${state.drinkBudget===1?'':'s'}</div>
+        <div class="measure-day-sub">Tap Progress to update weekly limit · Current: ${state.drinkBudget} day${state.drinkBudget===1?'':'s'}/wk</div>
+      </div>
+      <div class="measure-day-done">${overM?'⚠️':'✓'}</div>
+    </div>`;
+  }
+
+  const hadDrink=!!state.drinkDays[day];
+  html+=`
+  <div class="drink-row">
+    <div class="drink-toggle${hadDrink?' drink-on':''}" onclick="toggleDrink(${day})">
+      <span class="drink-toggle-label">🍷 Alcohol today?</span>
+      <span class="drink-badge">${hadDrink?'YES':'NO'}</span>
+    </div>
+  </div>
+  <div class="day-notes">
+    <div class="day-notes-header">📝 Session Notes · Energy / Weights / How You Felt</div>
+    <textarea placeholder="e.g. BB Workout 1: rows felt strong. Grip dead hang: 25s each hand. Hip stretch felt much more open today..." oninput="saveNote(${day},this.value)">${state.dayNotes[day]||''}</textarea>
+  </div>`;
+
+  if(!workouts){
+    html+=`
+    <div class="rest-day-card">
+      <div class="rest-icon">🌿</div>
+      <h2>Rest Day</h2>
+      <p>Your body rebuilds and grows stronger today. Sleep, hydrate, and nourish well. Morning ritual still applies.</p>
+      <div class="rest-note">Morning ritual still counts today — Take 10 + walk as usual.</div>
+    </div>`;
+  } else {
+    const mindfulItems =workouts.filter(w=>w.type==='meditation');
+    const strengthItems=workouts.filter(w=>w.type==='strength');
+    const pvolveItems  =workouts.filter(w=>w.type==='pvolve');
+    const cardioItems  =workouts.filter(w=>w.type==='peloton');
+    const gripItems    =workouts.filter(w=>w.type==='grip');
+    const recoveryItems=workouts.filter(w=>w.type==='stretch'||w.type==='mobility'||w.type==='selfcare');
+    const allDone=workouts.every((_,i)=>isWorkoutDone(day,i));
+
+    const renderSection=(label,items)=>{
+      if(!items.length) return '';
+      let s=`<div class="workout-section-head">${label}</div><div class="workouts-list">`;
+      items.forEach(wk=>{
+        const absIdx=workouts.indexOf(wk);
+        const isDone=isWorkoutDone(day,absIdx);
+        const colors={strength:'var(--sage)',pvolve:'var(--sage)',peloton:'var(--lavender)',grip:'var(--gold)',mobility:'var(--teal)',selfcare:'var(--rose)',stretch:'var(--lavender)',meditation:'var(--sage)'};
+        const isPvolve=wk.type==='pvolve';
+        const isStrength=wk.type==='strength';
+        const isPeloton=wk.type==='peloton'||wk.type==='meditation';
+        const isStretch=wk.type==='stretch'||wk.type==='selfcare';
+        // Determine platform link
+        let linkHtml='';
+        if(isStrength && wk.instructor==='Ben Bruno'){
+          linkHtml=`<a href="itms-apps://itunes.apple.com/app/id6770711952" target="_blank" onclick="event.stopPropagation()" class="platform-link" style="color:var(--gold)">📱 Open Bruno Strong</a>`;
+        } else if(isStrength && wk.classId){
+          linkHtml=`<a href="https://members.onepeloton.com/classes/strength?modal=classDetailsModal&classId=${wk.classId}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
+        } else if(isPvolve){
+          const url=pvolveUrl(wk.name.includes('Women')?'Women\'s Health':wk.name.includes('Movement')?'Movement Therapy':'Movement Therapy');
+          linkHtml=`<a href="${url}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Pvolve</a>`;
+        } else if(isPeloton && wk.classId){
+          const disc=TYPE_DISCIPLINE_M[wk.type]||'cycling';
+          linkHtml=`<a href="https://members.onepeloton.com/classes/${disc}?modal=classDetailsModal&classId=${wk.classId}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
+        } else if(isPeloton){
+          const instructor=wk.instructor||'Olivia Amato';
+          linkHtml=`<a href="${pelotonUrl(instructor,wk.mins)}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
+        } else if(isStretch && wk.classId){
+          linkHtml=`<a href="https://members.onepeloton.com/classes/stretching?modal=classDetailsModal&classId=${wk.classId}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
+        }
+        s+=`
+        <div class="workout-card type-${wk.type} ${isDone?'done':''}" style="animation-delay:${absIdx*0.05}s">
+          <div class="workout-check" onclick="toggleWorkout(${day},${absIdx})">${isDone?'✓':''}</div>
+          <div class="workout-info" onclick="toggleWorkout(${day},${absIdx})">
+            <div class="workout-type-label" style="color:${colors[wk.type]||'var(--sage)'}">${TYPE_LABELS[wk.type]||wk.type}</div>
+            <div class="workout-name">${wk.name}</div>
+            <div class="workout-meta">
+              <span class="workout-dur">${wk.mins} min</span>
+              <span class="workout-instructor">${wk.instructor}</span>
+            </div>
+            ${wk.note?`<div class="workout-note">${wk.note}</div>`:''}
+            ${wk.type==='grip'?`<div class="grip-badge" onclick="event.stopPropagation();switchTab('progress')" style="cursor:pointer">🤝 Track in Progress →</div>`:''}
+            ${linkHtml}
+          </div>
+        </div>`;
+      });
+      s+=`</div>`;
+      return s;
+    };
+
+    if(mindfulItems.length)  html+=renderSection('🧘 MINDFULNESS — PELOTON',mindfulItems);
+    if(strengthItems.length) html+=renderSection('① STRENGTH — PELOTON',strengthItems);
+    if(cardioItems.length)   html+=renderSection('② PELOTON — CARDIO',cardioItems);
+    if(pvolveItems.length)   html+=renderSection('③ MOVEMENT & WELLNESS — PVOLVE',pvolveItems);
+    if(gripItems.length)     html+=renderSection('④ GRIP WORK',gripItems);
+    if(recoveryItems.length) html+=renderSection('⑤ RECOVER & STRETCH — PELOTON',recoveryItems);
+
+    html+=`<button class="complete-btn ${allDone?'all-done':''}" onclick="markDayComplete(${day})">
+      ${allDone?'✓ DAY COMPLETE — WELL DONE 🌿':'MARK ALL COMPLETE'}
+    </button>`;
+  }
+
+  document.getElementById('todayContent').innerHTML=html;
+}
+
+function toggleWorkout(day,i){
+  state.completed[`${day}-${i}`]=!state.completed[`${day}-${i}`];
+  saveState(); renderToday();
+  if(state.completed[`${day}-${i}`]) showToast('✓ Done!');
+}
+function toggleMorning(day,key){
+  const mk=`morning-${day}`;
+  if(!state.morningDone[mk]) state.morningDone[mk]={jfl:false,walk:false};
+  state.morningDone[mk][key]=!state.morningDone[mk][key];
+  saveState(); renderToday();
+}
+function markDayComplete(day){
+  const ws=SCHEDULE[day]; if(!ws) return;
+  const allDone=ws.every((_,i)=>isWorkoutDone(day,i));
+  ws.forEach((_,i)=>{ state.completed[`${day}-${i}`]=!allDone; });
+  saveState(); renderToday();
+  if(!allDone) showToast('🌿 Day complete!');
+}
+function saveNote(day,text){ state.dayNotes[day]=text; saveState(); }
+function toggleDrink(day){
+  state.drinkDays[day]=!state.drinkDays[day];
+  saveState(); renderToday(); renderProgress();
+}
+function setDrinkBudget(val){
+  state.drinkBudget=Math.max(0,Math.min(7,isNaN(val)?1:val));
+  saveState(); renderProgress();
+}
+function changeDay(d){ state.viewingDay=Math.max(1,Math.min(90,state.viewingDay+d)); saveState(); renderToday(); }
+
+// ── RENDER SCHEDULE ──
+function renderSchedule(){
+  const today=getTodayDay();
+  let html='';
+
+  PHASES.forEach(phase=>{
+    const [s,e]=phase.days;
+    const done=Array.from({length:e-s+1},(_,i)=>s+i).filter(d=>isDayFullyDone(d)).length;
+    const training=Array.from({length:e-s+1},(_,i)=>s+i).filter(d=>SCHEDULE[d]!==null).length;
+    html+=`<div><div class="phase-head"><div class="phase-head-inner">
+      <span class="phase-head-tag" style="background:${phase.color};color:${phase.color===('var(--gold)')||phase.color==='var(--lavender)'?'#0a0f1a':'#0a0f1a'}">${phase.label}</span>
+      <span class="phase-head-title">${phase.name}</span>
+      <span class="phase-head-prog">${done}/${training}</span>
+    </div></div>`;
+
+    let prevWk=Math.ceil(s/7), wkDays=[];
+    for(let d=s;d<=e;d++){
+      const wk=Math.ceil(d/7);
+      if(wk!==prevWk&&wkDays.length){html+=renderSchedWeek(prevWk,wkDays,today);wkDays=[];prevWk=wk;}
+      wkDays.push(d);
+    }
+    if(wkDays.length) html+=renderSchedWeek(prevWk,wkDays,today);
+    html+=`</div>`;
+  });
+  document.getElementById('scheduleContent').innerHTML=html;
+  const sv=document.querySelector('.scroll-view');
+  const todayEl=document.querySelector('.sched-day-row.today-row');
+  if(todayEl&&sv){ sv.scrollTop=todayEl.getBoundingClientRect().top-sv.getBoundingClientRect().top-80; }
+}
+
+function renderSchedWeek(wk,days,today){
+  let html=`<div class="week-section"><div class="week-label-s">Week ${wk} · ${WK_STARTS[wk-1]||''} – ${WK_ENDS[wk-1]||''}</div>`;
+  days.forEach(d=>{
+    const ws=SCHEDULE[d], isRest=ws===null, isToday=d===today, isDone=isDayFullyDone(d);
+    let cls='sched-day-row';
+    if(isToday) cls+=' today-row';
+    if(isDone) cls+=' completed-row';
+    if(isRest) cls+=' rest-row';
+    const icon=isDone?'✅':isToday?'▶':isRest?'—':d<today?'○':'';
+    const chips=isRest
+      ?`<span class="chip chip-rest">REST</span>`
+      :[...new Set(ws.map(w=>w.type))].map(t=>`<span class="chip chip-${t}">${TYPE_LABELS[t]||t}</span>`).join('');
+    html+=`<div class="${cls}" onclick="jumpToDay(${d})">
+      <div class="sched-day-num">${d}</div>
+      <div class="sched-day-info">
+        <div class="sched-day-name">${DAY_DATES[d-1]||''}</div>
+        <div class="sched-day-chips">${chips}</div>
+      </div>
+      <div class="sched-day-status">${icon}</div>
+    </div>`;
+    // Measurement row every Sunday
+    if(d%7===0){
+      const hasMeasure=state.measurements.some(m=>m.week===wk);
+      html+=`<div class="measure-day-row" onclick="switchTab('progress')">
+        <div class="measure-day-icon">🤝</div>
+        <div class="measure-day-text">
+          <div class="measure-day-title">Week ${wk} Grip & Mobility Check</div>
+          <div class="measure-day-sub">Sunday evening · Both hands · Hip & shoulder ROM</div>
+        </div>
+        <div class="measure-day-done">${hasMeasure?'✅':'📲'}</div>
+      </div>`;
+    }
+  });
+  return html+`</div>`;
+}
+
+function jumpToDay(d){
+  state.viewingDay=d; saveState();
+  // Switch to today tab without resetting viewingDay (switchTab('today') would overwrite it)
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-today').classList.add('active');
+  document.getElementById('screen-today').classList.add('active');
+  document.querySelector('.scroll-view').scrollTop=0;
+  renderToday();
+}
+
+// ── RENDER PROGRESS ──
+function renderProgress(){
+  const today=getTodayDay();
+  const done=getCompletedCount();
+  const training=Object.values(SCHEDULE).filter(v=>v!==null).length;
+  const pct=Math.min(100,Math.round((done/today)*100));
+  const streak=calcStreak(today);
+  const circ=2*Math.PI*44;
+  const offset=circ-(pct/100)*circ;
+  const currentWk=Math.ceil(Math.min(today,90)/7);
+  const drinkCount=Object.values(state.drinkDays).filter(Boolean).length;
+  let afStreak=0; for(let d=today;d>=1;d--){ if(state.drinkDays[d]) break; afStreak++; }
+  const weekStart=(currentWk-1)*7+1;
+  const weekEnd=Math.min(currentWk*7,today);
+  let weekDrinks=0;
+  for(let d=weekStart;d<=weekEnd;d++){ if(state.drinkDays[d]) weekDrinks++; }
+  const weekOverBudget=weekDrinks>state.drinkBudget;
+
+  // Latest measurements
+  const latestM=state.measurements.length?state.measurements[state.measurements.length-1]:null;
+  const prevM=state.measurements.length>1?state.measurements[state.measurements.length-2]:null;
+
+  function delta(curr,prev,key,higher=true){
+    if(!curr||!prev||!curr[key]||!prev[key]) return '';
+    const diff=(parseFloat(curr[key])-parseFloat(prev[key])).toFixed(1);
+    if(diff==0) return '';
+    const good=higher?diff>0:diff<0;
+    return `<span class="h-delta ${good?'h-pos':'h-neg'}">${diff>0?'+':''}${diff}</span>`;
+  }
+
+  let html=`
+  <div class="prog-hero">
+    <div class="prog-top">
+      <div class="prog-ring-wrap">
+        <svg class="prog-ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="prog-ring-bg" cx="48" cy="48" r="44"/>
+          <circle class="prog-ring-fill" cx="48" cy="48" r="44" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="prog-ring-text"><div class="prog-pct">${pct}%</div><div class="prog-pct-label">Done</div></div>
+      </div>
+      <div class="prog-right">
+        <div class="prog-hero-title">90-Day Progress</div>
+        <div class="prog-stats-row">
+          <div class="prog-stat"><div class="prog-stat-val" style="color:var(--sage)">${done}</div><div class="prog-stat-lbl">Done</div></div>
+          <div class="prog-stat"><div class="prog-stat-val" style="color:var(--gold)">${streak}🔥</div><div class="prog-stat-lbl">Streak</div></div>
+          <div class="prog-stat"><div class="prog-stat-val" style="color:var(--lavender)">${training-done}</div><div class="prog-stat-lbl">Left</div></div>
+        </div>
+        <div style="margin-top:8px;">
+          <div class="prog-section-label">🍷 Drinking</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div class="prog-stat"><div class="prog-stat-val" style="color:${weekOverBudget?'#e46450':'var(--sage)'}">${weekDrinks}/${state.drinkBudget}</div><div class="prog-stat-lbl">W${currentWk} Drinks</div></div>
+            <div class="prog-stat"><div class="prog-stat-val" style="color:var(--sage)">${afStreak}</div><div class="prog-stat-lbl">Sober Streak</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drink-budget-row">
+    <span class="drink-budget-label">Weekly drink limit</span>
+    <input class="drink-budget-input" type="number" min="0" max="7" value="${state.drinkBudget}" onchange="setDrinkBudget(parseInt(this.value))">
+    <span class="drink-budget-unit">day${state.drinkBudget===1?'':'s'}/wk</span>
+  </div>
+
+  <!-- GRIP CARD -->
+  <div class="section-head">Grip Strength</div>
+  <div class="grip-card">
+    <div class="grip-card-title">
+      <span>🤝 Hand Grip · kg</span>
+      <span style="font-size:12px;color:var(--muted);font-weight:400">Dynamometer · Both Hands</span>
+    </div>
+    <div class="grip-hands">
+      <div class="grip-hand">
+        <div class="grip-hand-label">Dominant</div>
+        <div class="grip-hand-val">${latestM?.gripDom||'—'}</div>
+        <div class="grip-hand-unit">kg ${delta(latestM,prevM,'gripDom',true)}</div>
+      </div>
+      <div class="grip-hand">
+        <div class="grip-hand-label">Non-Dominant</div>
+        <div class="grip-hand-val">${latestM?.gripNon||'—'}</div>
+        <div class="grip-hand-unit">kg ${delta(latestM,prevM,'gripNon',true)}</div>
+      </div>
+    </div>
+    <div class="grip-note">Measure Sunday evening after rest · Consistent time, no pre-fatigue</div>
+  </div>
+
+  <!-- ROM CARD -->
+  <div class="section-head">Range of Motion</div>
+  <div class="rom-card">
+    <div class="rom-card-title">🔄 Hip & Shoulder Mobility</div>
+    <div class="rom-grid">
+      <div class="rom-item">
+        <div class="rom-label">Hip Flexion</div>
+        <div class="rom-val">${latestM?.hipFlex||'—'}<span class="rom-unit"> °</span></div>
+        <div style="font-size:11px;color:var(--muted)">${delta(latestM,prevM,'hipFlex',true)||'—'}</div>
+      </div>
+      <div class="rom-item">
+        <div class="rom-label">Hip Rotation</div>
+        <div class="rom-val">${latestM?.hipRot||'—'}<span class="rom-unit"> °</span></div>
+        <div style="font-size:11px;color:var(--muted)">${delta(latestM,prevM,'hipRot',true)||'—'}</div>
+      </div>
+      <div class="rom-item">
+        <div class="rom-label">Shoulder Flex</div>
+        <div class="rom-val">${latestM?.shoulderFlex||'—'}<span class="rom-unit"> °</span></div>
+        <div style="font-size:11px;color:var(--muted)">${delta(latestM,prevM,'shoulderFlex',true)||'—'}</div>
+      </div>
+      <div class="rom-item">
+        <div class="rom-label">Shoulder Rot</div>
+        <div class="rom-val">${latestM?.shoulderRot||'—'}<span class="rom-unit"> °</span></div>
+        <div style="font-size:11px;color:var(--muted)">${delta(latestM,prevM,'shoulderRot',true)||'—'}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="section-head">Training Map</div>
+  <div class="heatmap-labels">${Array.from({length:13},(_,i)=>`<div class="heatmap-wk-lbl">W${i+1}</div>`).join('')}</div>
+  <div class="heatmap-row">`;
+
+  for(let wk=1;wk<=13;wk++){
+    html+=`<div class="heatmap-week">`;
+    for(let wd=0;wd<7;wd++){
+      const d=(wk-1)*7+wd+1;
+      if(d>90){html+=`<div class="heatmap-cell" style="opacity:.2"></div>`;continue;}
+      const isDone2=isDayFullyDone(d),isRest=SCHEDULE[d]===null,isToday=d===today,drank=!!state.drinkDays[d];
+      html+=`<div class="heatmap-cell${isDone2?' done-cell':''}${isRest?' rest-cell':''}${isToday?' today-cell':''}${drank?' drank-cell':''}" title="Day ${d}${drank?' · 🍷':''}"></div>`;
+    }
+    html+=`</div>`;
+  }
+  html+=`</div>`;
+
+  // Measurement form — week selector (logic provided by GEN:SHARED_JS)
+  const defaultFormWk=calcDefaultFormWeek(currentWk);
+  const wkOptions=buildWeekOptions(currentWk,defaultFormWk);
+
+  html+=`
+  <div class="section-head">Weekly Measurements</div>
+  <div class="measure-form">
+    <div class="measure-form-title">
+      <span>Log Measurements</span>
+      <select id="measure-wk-sel" class="measure-week-select" onchange="onMeasureWkChange(parseInt(this.value))">${wkOptions}</select>
+    </div>
+    <div class="measure-grid">
+      <div class="measure-field">
+        <label>Dominant Hand <span class="measure-unit">kg</span></label>
+        <input type="number" id="m-gripdom" placeholder="—" inputmode="decimal" step="0.1">
+      </div>
+      <div class="measure-field">
+        <label>Non-Dominant <span class="measure-unit">kg</span></label>
+        <input type="number" id="m-gripnon" placeholder="—" inputmode="decimal" step="0.1">
+      </div>
+      <div class="measure-field">
+        <label>Hip Flexion <span class="measure-unit">°</span></label>
+        <input type="number" id="m-hipflex" placeholder="—" inputmode="decimal" step="1">
+      </div>
+      <div class="measure-field">
+        <label>Hip Rotation <span class="measure-unit">°</span></label>
+        <input type="number" id="m-hiprot" placeholder="—" inputmode="decimal" step="1">
+      </div>
+      <div class="measure-field">
+        <label>Shoulder Flex <span class="measure-unit">°</span></label>
+        <input type="number" id="m-sflex" placeholder="—" inputmode="decimal" step="1">
+      </div>
+      <div class="measure-field">
+        <label>Shoulder Rot <span class="measure-unit">°</span></label>
+        <input type="number" id="m-srot" placeholder="—" inputmode="decimal" step="1">
+      </div>
+      <div class="measure-notes-field">
+        <label style="display:block;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;font-weight:600">Notes</label>
+        <textarea id="m-notes" placeholder="How do your joints feel? Any areas of improvement or tightness?"></textarea>
+      </div>
+    </div>
+    <button class="measure-save-btn" onclick="saveMeasurementFromForm()">SAVE MEASUREMENTS</button>
+  </div>`;
+
+  // History
+  if(state.measurements.length){
+    html+=`<div class="section-head">Measurement History</div>
+    <div class="history-card">
+    <div class="history-row hdr"><div>Wk</div><div>Dom</div><div>Non</div><div>Hip</div><div>Shld</div></div>`;
+    state.measurements.forEach((m,i)=>{
+      const p=state.measurements[i-1];
+      html+=`<div class="history-row">
+        <div class="history-wk">${m.week===0?'BASE':'W'+m.week}</div>
+        <div class="history-val">${m.gripDom||'—'} ${delta(m,p,'gripDom',true)}</div>
+        <div class="history-val">${m.gripNon||'—'} ${delta(m,p,'gripNon',true)}</div>
+        <div class="history-val">${m.hipFlex||'—'}° ${delta(m,p,'hipFlex',true)}</div>
+        <div class="history-val">${m.shoulderFlex||'—'}° ${delta(m,p,'shoulderFlex',true)}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  } else {
+    html+=`<div class="section-head">Measurement History</div>
+    <div class="history-card"><div class="empty-history">Log your Week 0 baseline to start tracking progress 🌿</div></div>`;
+  }
+
+  document.getElementById('progressContent').innerHTML=html;
+  // Pre-populate form with existing data for the default week
+  onMeasureWkChange(defaultFormWk);
+}
+
+function calcStreak(today){
+  let s=0;
+  for(let d=Math.min(today,90);d>=1;d--){
+    if(SCHEDULE[d]===null) continue;
+    if(isDayFullyDone(d)) s++;
+    else if(d<today) break;
+  }
+  return s;
+}
+
+function saveMeasurement(forceWk){
+  const gripDom=document.getElementById('m-gripdom').value;
+  const gripNon=document.getElementById('m-gripnon').value;
+  const hipFlex=document.getElementById('m-hipflex').value;
+  const hipRot=document.getElementById('m-hiprot').value;
+  const shoulderFlex=document.getElementById('m-sflex').value;
+  const shoulderRot=document.getElementById('m-srot').value;
+  const notes=document.getElementById('m-notes').value;
+  if(!gripDom&&!gripNon&&!hipFlex&&!shoulderFlex){showToast('Enter at least one measurement','var(--rose)');return;}
+  const wk=forceWk!==undefined?forceWk:Math.ceil(Math.min(getTodayDay(),90)/7);
+  const entry={week:wk,date:new Date().toLocaleDateString(),gripDom,gripNon,hipFlex,hipRot,shoulderFlex,shoulderRot,notes};
+  const idx=state.measurements.findIndex(m=>m.week===wk);
+  if(idx>=0) state.measurements[idx]=entry;
+  else { state.measurements.push(entry); state.measurements.sort((a,b)=>a.week-b.week); }
+  saveState(); renderProgress();
+  showToast(wk===0?'🌿 Baseline saved!':'📊 Week '+wk+' saved!');
+}
+
+// ── TABS ──
+function switchTab(tab){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById(`screen-${tab}`).classList.add('active');
+  document.querySelector('.scroll-view').scrollTop=0;
+  if(tab==='today'){ state.viewingDay=getTodayDay(); saveState(); renderToday(); }
+  else if(tab==='schedule') renderSchedule();
+  else renderProgress();
+}
+
+let toastT;
+function showToast(msg,bg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.background=bg||'var(--sage)';
+  el.style.color=bg?'#fff':'#0a0f1a';
+  el.classList.add('show'); clearTimeout(toastT);
+  toastT=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// ── PWA ──
+(function initPWA(){
+  function makeIcon(size){
+    const c=document.createElement('canvas'); c.width=c.height=size;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#0a0f1a'; ctx.fillRect(0,0,size,size);
+    ctx.fillStyle='#7aad8a'; ctx.fillRect(0,0,size,size*.06);
+    ctx.fillStyle='#7aad8a';
+    ctx.font=`700 ${size*.38}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('M90',size/2,size*.42);
+    ctx.fillStyle='rgba(238,240,236,0.6)';
+    ctx.font=`600 ${size*.11}px sans-serif`;
+    ctx.fillText('MOVE · 90',size/2,size*.72);
+    ctx.fillStyle='#4db8a8';
+    ctx.beginPath(); ctx.arc(size/2,size*.87,size*.035,0,Math.PI*2); ctx.fill();
+    return c.toDataURL('image/png');
+  }
+  const icon192=makeIcon(192);
+  const link=document.createElement('link');
+  link.rel='apple-touch-icon'; link.href=icon192;
+  document.head.appendChild(link);
+  const manifest={name:'Move · 90 — Strength & Mobility',short_name:'Move 90',start_url:'./',display:'standalone',orientation:'portrait',background_color:'#0a0f1a',theme_color:'#0a0f1a',icons:[{src:icon192,sizes:'192x192',type:'image/png',purpose:'any maskable'}]};
+  const mBlob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const mLink=document.createElement('link'); mLink.rel='manifest'; mLink.href=URL.createObjectURL(mBlob);
+  document.head.appendChild(mLink);
+  if('serviceWorker' in navigator){
+    const sw=`const C='move90-v4';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll([self.location.href||'/'])).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})),{scope:'./'});
+  }
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.navigator.standalone===true;
+  const dismissed=localStorage.getItem('move90_install_dismissed');
+  if(isIOS&&!isStandalone&&!dismissed){
+    setTimeout(()=>{
+      const b=document.createElement('div');
+      b.innerHTML=`<style>#m90banner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0f1e30;border-top:2px solid #7aad8a;padding:14px 16px calc(env(safe-area-inset-bottom,20px) + 14px);display:flex;align-items:center;gap:12px;animation:slideUp .3s ease}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}#m90banner .ib-icon{font-size:30px;flex-shrink:0}#m90banner .ib-text{flex:1}#m90banner .ib-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#eef0ec;margin-bottom:3px}#m90banner .ib-steps{font-size:11px;color:rgba(238,240,236,.6);line-height:1.5}#m90banner .ib-steps span{color:#7aad8a;font-weight:600}#m90banner .ib-close{font-size:20px;color:rgba(238,240,236,.4);cursor:pointer;padding:4px;flex-shrink:0}</style>
+      <div id="m90banner"><div class="ib-icon">🌿</div><div class="ib-text"><div class="ib-title">Add to Home Screen</div><div class="ib-steps">Tap <span>Share ↑</span> then <span>"Add to Home Screen"</span></div></div><div class="ib-close" onclick="this.closest('#m90banner').remove();localStorage.setItem('move90_install_dismissed','1')">✕</div></div>`;
+      document.body.appendChild(b);
+    },2500);
+  }
+})();
+
+// ── INIT ──
+loadState();
+renderToday();
+</script>
+</body>
+</html>
