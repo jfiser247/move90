@@ -605,26 +605,26 @@ function getTodayDay() {
   return Math.max(1,Math.min(90,Math.floor((t-s)/86400000)+1));
 }
 function loadState() {
-  try{ const s=localStorage.getItem('move90v2'); if(s) state={...state,...JSON.parse(s)}; }catch(e){}
-  // First-run migration from Round 1 (move90v1): carry forward grip/mobility measurements only.
-  // All day-specific data (notes, completions, drinkDays, morningDone) intentionally reset
-  // for the new program starting Jun 30 2026.
-  if(!state.migratedFromV1){
+  try{ const s=localStorage.getItem('move90v3'); if(s) state={...state,...JSON.parse(s)}; }catch(e){}
+  // Migration from v2 (Jun 29 start): carry forward grip/mobility measurements only.
+  // All day-specific data (completions, notes, morningDone, drinkDays) intentionally reset
+  // for the redesigned Jul 6 2026 program.
+  if(!state.migratedFromV2){
     try{
-      const old=localStorage.getItem('move90v1');
+      const old=localStorage.getItem('move90v2');
       if(old){
         const prev=JSON.parse(old);
         if(prev.measurements && prev.measurements.length) state.measurements=prev.measurements;
         if(prev.drinkBudget) state.drinkBudget=prev.drinkBudget;
       }
     }catch(e){}
-    state.migratedFromV1=true;
-    try{ localStorage.setItem('move90v2',JSON.stringify(state)); }catch(e){}
+    state.migratedFromV2=true;
+    try{ localStorage.setItem('move90v3',JSON.stringify(state)); }catch(e){}
   }
   state.viewingDay=getTodayDay();
 }
 function saveState() {
-  try{ localStorage.setItem('move90v2',JSON.stringify(state)); }catch(e){}
+  try{ localStorage.setItem('move90v3',JSON.stringify(state)); }catch(e){}
 }
 function isWorkoutDone(day,i){ return !!state.completed[`${day}-${i}`]; }
 function isDayFullyDone(day){
