@@ -171,6 +171,9 @@ html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--whit
 .type-mobility { --card-accent:var(--teal); color:var(--teal); }
 .type-selfcare { --card-accent:var(--rose); color:var(--rose); }
 .type-stretch  { --card-accent:rgba(143,168,204,.8); color:var(--lavender); }
+.type-yoga     { --card-accent:var(--teal); color:var(--teal); }
+.type-core     { --card-accent:var(--sage); color:var(--sage); }
+.type-cardio   { --card-accent:var(--lavender); color:var(--lavender); }
 
 .complete-btn { margin:12px 14px 0; padding:14px; background:var(--sage); border:none; border-radius:13px; color:#0a0f1a; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; width:calc(100% - 28px); cursor:pointer; transition:opacity .2s,transform .1s; }
 .complete-btn:active { transform:scale(.98); }
@@ -577,11 +580,12 @@ const T10_URL = 'https://members.onepeloton.com/classes/yoga#sort_by=original_ai
 const TYPE_LABELS = {
   strength:'Strength', pvolve:'Movement', peloton:'Peloton', grip:'Grip Work',
   mobility:'Mobility', selfcare:'Self-Care', stretch:'Stretch', meditation:'Mindfulness',
+  yoga:'Yoga', core:'Core', cardio:'Cardio',
 };
 
 // Peloton discipline slug for URL building
 const TYPE_DISCIPLINE_M = {
-  peloton:'cycling', meditation:'meditation',
+  peloton:'cycling', meditation:'meditation', yoga:'yoga', core:'strength', cardio:'cardio',
 };
 
 const PHASES = [
@@ -740,7 +744,9 @@ function renderToday(){
     const mindfulItems =workouts.filter(w=>w.type==='meditation');
     const strengthItems=workouts.filter(w=>w.type==='strength');
     const pvolveItems  =workouts.filter(w=>w.type==='pvolve');
-    const cardioItems  =workouts.filter(w=>w.type==='peloton');
+    const cardioItems  =workouts.filter(w=>w.type==='peloton'||w.type==='cardio');
+    const yogaItems    =workouts.filter(w=>w.type==='yoga');
+    const coreItems    =workouts.filter(w=>w.type==='core');
     const gripItems    =workouts.filter(w=>w.type==='grip');
     const recoveryItems=workouts.filter(w=>w.type==='stretch'||w.type==='mobility'||w.type==='selfcare');
     const allDone=workouts.every((_,i)=>isWorkoutDone(day,i));
@@ -751,11 +757,12 @@ function renderToday(){
       items.forEach(wk=>{
         const absIdx=workouts.indexOf(wk);
         const isDone=isWorkoutDone(day,absIdx);
-        const colors={strength:'var(--sage)',pvolve:'var(--sage)',peloton:'var(--lavender)',grip:'var(--gold)',mobility:'var(--teal)',selfcare:'var(--rose)',stretch:'var(--lavender)',meditation:'var(--sage)'};
+        const colors={strength:'var(--sage)',pvolve:'var(--sage)',peloton:'var(--lavender)',grip:'var(--gold)',mobility:'var(--teal)',selfcare:'var(--rose)',stretch:'var(--lavender)',meditation:'var(--sage)',yoga:'var(--teal)',core:'var(--sage)',cardio:'var(--lavender)'};
         const isPvolve=wk.type==='pvolve';
         const isStrength=wk.type==='strength';
         const isPeloton=wk.type==='peloton'||wk.type==='meditation';
         const isStretch=wk.type==='stretch'||wk.type==='selfcare';
+        const isPelotonWithClass=wk.classId&&(wk.type==='yoga'||wk.type==='core'||wk.type==='cardio');
         // Determine platform link
         let linkHtml='';
         if(isStrength && wk.instructor==='Ben Bruno'){
@@ -773,6 +780,9 @@ function renderToday(){
           linkHtml=`<a href="${pelotonUrl(instructor,wk.mins)}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
         } else if(isStretch && wk.classId){
           linkHtml=`<a href="https://members.onepeloton.com/classes/stretching?modal=classDetailsModal&classId=${wk.classId}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
+        } else if(isPelotonWithClass){
+          const disc=TYPE_DISCIPLINE_M[wk.type]||'cycling';
+          linkHtml=`<a href="https://members.onepeloton.com/classes/${disc}?modal=classDetailsModal&classId=${wk.classId}" target="_blank" onclick="event.stopPropagation()" class="platform-link">▶ Open Peloton</a>`;
         }
         s+=`
         <div class="workout-card type-${wk.type} ${isDone?'done':''}" style="animation-delay:${absIdx*0.05}s">
@@ -796,10 +806,12 @@ function renderToday(){
 
     if(mindfulItems.length)  html+=renderSection('🧘 MINDFULNESS — PELOTON',mindfulItems);
     if(strengthItems.length) html+=renderSection('① STRENGTH — PELOTON',strengthItems);
-    if(cardioItems.length)   html+=renderSection('② PELOTON — CARDIO',cardioItems);
-    if(pvolveItems.length)   html+=renderSection('③ MOVEMENT & WELLNESS — PVOLVE',pvolveItems);
-    if(gripItems.length)     html+=renderSection('④ GRIP WORK',gripItems);
-    if(recoveryItems.length) html+=renderSection('⑤ RECOVER & STRETCH — PELOTON',recoveryItems);
+    if(yogaItems.length)     html+=renderSection('② YOGA — PELOTON',yogaItems);
+    if(cardioItems.length)   html+=renderSection('③ CARDIO — PELOTON',cardioItems);
+    if(coreItems.length)     html+=renderSection('④ CORE — PELOTON',coreItems);
+    if(pvolveItems.length)   html+=renderSection('⑤ MOVEMENT & WELLNESS — PVOLVE',pvolveItems);
+    if(gripItems.length)     html+=renderSection('⑥ GRIP WORK',gripItems);
+    if(recoveryItems.length) html+=renderSection('⑦ RECOVER & STRETCH — PELOTON',recoveryItems);
 
     html+=`<button class="complete-btn ${allDone?'all-done':''}" onclick="markDayComplete(${day})">
       ${allDone?'✓ DAY COMPLETE — WELL DONE 🌿':'MARK ALL COMPLETE'}
