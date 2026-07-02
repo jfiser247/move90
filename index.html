@@ -621,6 +621,16 @@ function loadState() {
     state.migratedFromV2=true;
     try{ localStorage.setItem('move90v3',JSON.stringify(state)); }catch(e){}
   }
+  // One-time hard reset for Jul 6 redesign — clears any stale completion/notes data
+  // that may have leaked in from old cached versions or earlier migration runs.
+  if(!state.resetForJul6){
+    state.completed={};
+    state.morningDone={};
+    state.dayNotes={};
+    state.drinkDays={};
+    state.resetForJul6=true;
+    try{ localStorage.setItem('move90v3',JSON.stringify(state)); }catch(e){}
+  }
   state.viewingDay=getTodayDay();
 }
 function saveState() {
